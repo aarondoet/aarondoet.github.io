@@ -27,7 +27,7 @@ description: test desc
     });
 	var uId = vars["user"];
 	var gId = vars["guild"];
-	var userStats = Json.parse(httpGet("https://l0c4lh057.jg-p.eu/uploads/usersettings.json.txt"));
+	var userStats = JSON.parse(httpGet("https://l0c4lh057.jg-p.eu/uploads/usersettings.json.txt"));
 	console.log(userStats);
 </script>
 
