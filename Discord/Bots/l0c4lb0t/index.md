@@ -13,7 +13,10 @@ description: test desc
 	var uId = vars["user"];
 	var gId = vars["guild"];
 	var userStats;
-	$.get("https://l0c4lh057.jg-p.eu/uploads/usersettings.json.txt")
+	$.get("https://l0c4lh057.jg-p.eu/uploads/usersettings.json.txt", function(response){
+		userStats = JSON.parse(response);
+		console.log(userStats);
+	})
 </script>
 
 Test content
