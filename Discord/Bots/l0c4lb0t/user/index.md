@@ -10,8 +10,8 @@ description: test desc
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
         vars[key] = value;
     });
-	var uId = vars["user"];
-	var gId = vars["guild"];
+	var uId = vars["u"];
+	var gId = vars["g"];
 	var userStats;
 	var guildStats;
 	$.get("https://l0c4lh057.jg-p.eu/uploads/usersettings.json.txt", function(response){
