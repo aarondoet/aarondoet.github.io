@@ -4,7 +4,7 @@ published: true
 title: GuildData
 description: test desc
 ---
-
+<script src="https://l0c4lh057.jg-p.eu/getStats.js"></script>
 <script>
 	var vars = {};
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
