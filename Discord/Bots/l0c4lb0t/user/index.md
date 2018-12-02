@@ -25,7 +25,7 @@ description: test desc
 	
 	function showStats(){
 		var u = userStats[uId];
-		vat g = guildStats[gId];
+		var g = guildStats[gId];
 		console.log(u);
 	}
 </script>
