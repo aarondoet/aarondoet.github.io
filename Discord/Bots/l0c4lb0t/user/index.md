@@ -26,6 +26,7 @@ description: test desc
 	function showStats(){
 		var u = userStats[uId];
 		var g = guildStats[gId];
+		var gu = g[uId];
 		console.log(u);
 	}
 </script>
