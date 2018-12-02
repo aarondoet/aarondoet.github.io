@@ -3,5 +3,3 @@ description: Main page
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-midnight
-include:
-  - BetterDiscord/Plugins/GuildData
