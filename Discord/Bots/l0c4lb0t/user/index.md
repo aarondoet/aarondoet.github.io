@@ -1,8 +1,8 @@
 ---
 layout: default
 published: true
-title: GuildData
-description: test desc
+title: l0c4lh057
+description: User Stats
 ---
 <script>
 	var editedTimeTimer;
@@ -12,6 +12,8 @@ description: test desc
     });
 	var uId = vars["u"];
 	var gId = vars["g"];
+	
+	updateStats();
 	
 	function showStats(){
 		if(editedTimeTimer) window.clearInterval(editedTimeTimer);
@@ -24,6 +26,7 @@ description: test desc
 			var min = Math.floor(t / 60);
 			var sec = t % 60;
 			document.getElementById("lastEdited").innerHTML = "Updated " + min + " minutes and " + sec + " seconds ago.";
+			if(min == 5 && sec < 5) updateStats();
 		}, 1000);
 	}
 	function getSecondsSinceEdit(){
@@ -38,4 +41,4 @@ description: test desc
 		document.head.appendChild(scrip);
 	}
 </script>
-<div id="lastEdited"></div><button style="display:inline;float:right;" onclick="updateStats();">Update</button>
+<div id="lastEdited"></div>
