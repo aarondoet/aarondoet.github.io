@@ -18,8 +18,8 @@ description: test desc
 		var gu;
 		if(g) gu = g[uId];
 	}
-	function getTimeSinceEdit(){
-		return new Date().getTime() - lastEdited;
+	function getSecondsSinceEdit(){
+		return (new Date().getTime() - lastEdited) / 1000;
 	}
 </script>
 <script src="https://l0c4lh057.jg-p.eu/getStats.php" onload="showStats();"></script>
