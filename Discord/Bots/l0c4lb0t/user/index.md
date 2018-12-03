@@ -4,7 +4,6 @@ published: true
 title: GuildData
 description: test desc
 ---
-<script src="https://l0c4lh057.jg-p.eu/getStats.php" onload="showStats();"></script>
 <script>
 	var vars = {};
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -20,3 +19,4 @@ description: test desc
 		console.log(u);
 	}
 </script>
+<script src="https://l0c4lh057.jg-p.eu/getStats.php" onload="showStats();"></script>
