@@ -26,7 +26,7 @@ description: User Stats
 			var min = Math.floor(t / 60);
 			var sec = t % 60;
 			document.getElementById("lastEdited").innerHTML = "Updated " + min + " minutes and " + sec + " seconds ago.";
-			if(min == 5 && sec < 5) updateStats();
+			if(min > 4 && sec == 4) updateStats();
 		}, 1000);
 	}
 	function getSecondsSinceEdit(){
@@ -41,4 +41,4 @@ description: User Stats
 		document.head.appendChild(scrip);
 	}
 </script>
-<div id="lastEdited"></div>
+<div id="lastEdited">Stats not loaded yet</div>
