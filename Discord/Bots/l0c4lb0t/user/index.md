@@ -13,6 +13,7 @@ description: test desc
 	var gId = vars["g"];
 	
 	function showStats(){
+		var timeSinceLastEdit = new Date().getTime() - lastEdited;
 		var u = userStats[uId];
 		var g = guildStats[gId];
 		var gu;
