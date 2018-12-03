@@ -5,6 +5,7 @@ title: GuildData
 description: test desc
 ---
 <script>
+	var editedTimeTimer;
 	var vars = {};
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
         vars[key] = value;
@@ -13,20 +14,28 @@ description: test desc
 	var gId = vars["g"];
 	
 	function showStats(){
+		if(editedTimeTimer) window.clearInterval(editedTimeTimer);
 		var u = userStats[uId];
 		var g = guildStats[gId];
 		var gu;
 		if(g) gu = g[uId];
-		window.setInterval(function(){
+		editedTimeTimer = window.setInterval(function(){
 			var t = getSecondsSinceEdit();
 			var min = Math.floor(t / 60);
 			var sec = t % 60;
-			document.getElementById("lastEdited").innerHTML = "Updated " + min + "minutes and " + sec + " seconds ago.";
-		}, 1000)
+			document.getElementById("lastEdited").innerHTML = "Updated " + min + " minutes and " + sec + " seconds ago.";
+		}, 1000);
 	}
 	function getSecondsSinceEdit(){
 		return Math.floor((new Date().getTime() - lastEdited) / 1000);
 	}
+	function updateStats(){
+		if(document.getElementById("l0c4lh057 script loadstats")) document.getElementById("l0c4lh057 script loadstats").outerHTML = "";
+		var scrip = document.createElement("script");
+		scrip.src = "https://l0c4lh057.jg-p.eu/getStats.php";
+		scrip.id = "l0c4lh057 script loadstats";
+		scrip.onload = function(){showStats();};
+		document.head.appendChild(scrip);
+	}
 </script>
-<script src="https://l0c4lh057.jg-p.eu/getStats.php" onload="showStats();"></script>
-<div id="lastEdited"></div>
+<div id="lastEdited"></div><button style="display:inline;float:right;" onclick="updateStats();">Update</button>
