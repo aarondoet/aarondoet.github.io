@@ -17,9 +17,16 @@ description: test desc
 		var g = guildStats[gId];
 		var gu;
 		if(g) gu = g[uId];
+		window.setInterval(function(){
+			var t = getSecondsSinceEdit();
+			var min = Math.floor(t / 60);
+			var sec = t % 60;
+			document.getElementById("lastEdited").innerHTML = "Updated " + min + "minutes and " + sec + " seconds ago.";
+		}, 1000)
 	}
 	function getSecondsSinceEdit(){
-		return (new Date().getTime() - lastEdited) / 1000;
+		return Math.floor((new Date().getTime() - lastEdited) / 1000);
 	}
 </script>
 <script src="https://l0c4lh057.jg-p.eu/getStats.php" onload="showStats();"></script>
+<div id="lastEdited"></div>
