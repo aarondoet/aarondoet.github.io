@@ -1,7 +1,7 @@
 ---
 layout: default
 published: true
-title: l0c4lh057
+title: l0c4lb0t
 description: User Stats
 ---
 <script>
@@ -26,7 +26,7 @@ description: User Stats
 			if(gu && u){
 				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
 			}else{
-				
+				document.title = "User not found | l0c4lb0t";
 			}
 		}else{
 			document.title = "Guild not found | l0c4lb0t";
