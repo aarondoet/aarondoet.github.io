@@ -20,7 +20,7 @@ description: User Stats
 		if(editedTimeTimer) window.clearInterval(editedTimeTimer);
 		u = userStats[uId];
 		g = guildStats[gId];
-		if(g) gu = g[uId]; else gu = undefined;
+		if(g) gu = g["user"][uId]; else gu = undefined;
 		
 		if(g){
 			if(gu && u){
