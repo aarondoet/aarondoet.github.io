@@ -47,3 +47,4 @@ description: Guild Stats
 		document.head.appendChild(scrip);
 	}
 </script>
+<div id="lastEdited">Stats not loaded yet</div>
