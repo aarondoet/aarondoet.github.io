@@ -12,15 +12,15 @@ description: User Stats
     });
 	var uId = vars["u"];
 	var gId = vars["g"];
+	var u, g, gu;
 	
 	updateStats();
 	
 	function showStats(){
 		if(editedTimeTimer) window.clearInterval(editedTimeTimer);
-		var u = userStats[uId];
-		var g = guildStats[gId];
-		var gu;
-		if(g) gu = g[uId];
+		u = userStats[uId];
+		g = guildStats[gId];
+		if(g) gu = g[uId]; else gu = undefined;
 		
 		if(g){
 			if(gu && u){
