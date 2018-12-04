@@ -21,6 +21,17 @@ description: User Stats
 		var g = guildStats[gId];
 		var gu;
 		if(g) gu = g[uId];
+		
+		if(g){
+			if(gu && u){
+				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
+			}else{
+				
+			}
+		}else{
+			document.title = "Guild not found | l0c4lb0t";
+		}
+		
 		editedTimeTimer = window.setInterval(function(){
 			var t = getSecondsSinceEdit();
 			var min = Math.floor(t / 60);
