@@ -19,7 +19,7 @@ description: Guild Stats
 		var g = guildStats[gId];
 		
 		if(g){
-			document.title = "Guild Stats: " + g.guildName + " | l0c4lb0t";
+			document.title = "Guild Stats: " + escapeHtml(g.guildName) + " | l0c4lb0t";
 		}else{
 			document.title = "Guild not found | l0c4lb0t";
 		}

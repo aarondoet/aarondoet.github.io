@@ -24,7 +24,7 @@ description: User Stats
 		
 		if(g){
 			if(gu && u){
-				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
+				document.title = "User Stats: " + escapeHtml(u.username) + " - " + escapeHtml(g.guildName) + " | l0c4lb0t";
 			}else{
 				document.title = "User not found | l0c4lb0t";
 			}
