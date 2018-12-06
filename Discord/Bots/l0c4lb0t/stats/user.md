@@ -51,5 +51,14 @@ description: User Stats
 		scrip.onload = function(){showStats();};
 		document.head.appendChild(scrip);
 	}
+	
+	escapeHtml= function(txt) {
+		return txt
+			 .replace(/&/g, "&amp;")
+			 .replace(/</g, "&lt;")
+			 .replace(/>/g, "&gt;")
+			 .replace(/"/g, "&quot;")
+			 .replace(/'/g, "&#039;");
+	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
