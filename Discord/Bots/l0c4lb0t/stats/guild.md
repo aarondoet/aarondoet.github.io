@@ -5,9 +5,6 @@ title: l0c4lb0t
 description: Guild Stats
 ---
 <style>
-	div#settings container{
-		position: relative;
-	}
 	.settings.panel:nth-child(even){
 		float: right;
 		position: inherit;
@@ -84,7 +81,7 @@ description: Guild Stats
 	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
-<div id="settings container">
+<div id="settings container" style="position:relative;">
 	<div class="settings panel">
 		<div class="settings title">Titel 1</div>
 		<div class="settings value">Wert 1</div>
