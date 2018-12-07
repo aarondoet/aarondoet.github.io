@@ -4,6 +4,33 @@ published: true
 title: l0c4lb0t
 description: Guild Stats
 ---
+<style>
+	#settings#container{
+		position: relative;
+	}
+	.settings.panel:nth-child(even){
+		float: right;
+		position: inherit;
+		top: -134px;
+	}
+	.settings.panel{
+		border: 2px white solid;
+		border-radius: 8px;
+		width: calc(50% - 30px);
+		padding: 10px;
+		margin-top: 10px;
+		height: 100px;
+	}
+	.settings.title{
+		font-size: 20px;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	.settings.value{
+		font-size: 14px;
+		margin-left: 10px;
+	}
+</style>
 <script>
 	var editedTimeTimer;
 	var vars = {};
@@ -19,7 +46,7 @@ description: Guild Stats
 		var g = guildStats[gId];
 		
 		if(g){
-			document.title = "Guild Stats: " + escapeHtml(g.guildName) + " | l0c4lb0t";
+			document.title = "Guild Stats: " + g.guildName + " | l0c4lb0t";
 		}else{
 			document.title = "Guild not found | l0c4lb0t";
 		}
@@ -57,3 +84,25 @@ description: Guild Stats
 	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
+<div id="settings container">
+	<div class="settings panel">
+		<div class="settings title">Titel 1</div>
+		<div class="settings value">Wert 1</div>
+	</div>
+	<div class="settings panel">
+		<div class="settings title">Titel 2</div>
+		<div class="settings value">Wert 2</div>
+	</div>
+	<div class="settings panel">
+		<div class="settings title">Titel 3</div>
+		<div class="settings value">Wert 3</div>
+	</div>
+	<div class="settings panel">
+		<div class="settings title">Titel 4</div>
+		<div class="settings value">Wert 4</div>
+	</div>
+	<div class="settings panel">
+		<div class="settings title">Titel 5</div>
+		<div class="settings value">Wert 5</div>
+	</div>
+</div>
