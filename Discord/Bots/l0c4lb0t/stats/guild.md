@@ -5,7 +5,7 @@ title: l0c4lb0t
 description: Guild Stats
 ---
 <style>
-	#settings#container{
+	div#settings container{
 		position: relative;
 	}
 	.settings.panel:nth-child(even){
