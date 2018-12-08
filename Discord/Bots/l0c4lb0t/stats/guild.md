@@ -77,12 +77,9 @@ description: Guild Stats
 			document.getElementById("settings container").innerHTML = "There are no stats for this guild available.";
 		}
 		
+		updateUpdateTime();
 		editedTimeTimer = window.setInterval(function(){
-			var t = getSecondsSinceEdit();
-			var min = Math.floor(t / 60);
-			var sec = t % 60;
-			document.getElementById("lastEdited").innerHTML = "Updated " + min + " minutes and " + sec + " seconds ago.";
-			if(min > 4 && sec == 4) updateStats();
+			updateUpdateTime();
 		}, 1000);
 	}
 	function getSecondsSinceEdit(){
@@ -99,8 +96,14 @@ description: Guild Stats
 		scrip.onload = function(){showStats();};
 		document.head.appendChild(scrip);
 	}
-	
-	escapeHtml= function(txt) {
+	function updateUpdateTime(){
+		var t = getSecondsSinceEdit();
+		var min = Math.floor(t / 60);
+		var sec = t % 60;
+		document.getElementById("lastEdited").innerHTML = "Updated " + min + " minutes and " + sec + " seconds ago.";
+		if(min > 4 && sec == 4) updateStats();
+	}
+	function escapeHtml(txt) {
 		return txt
 			 .replace(/&/g, "&amp;")
 			 .replace(/</g, "&lt;")
@@ -110,4 +113,9 @@ description: Guild Stats
 	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
-<div id="settings container" class="settings container" style="position:relative;"></div>
+<div id="settings container" class="settings container" style="position:relative;">
+	<div class="settings panel">
+		<div class="settings title">Stats not loaded yet</div>
+		<div class="settings value">Stats not loaded yet</div>
+	</div>
+</div>
