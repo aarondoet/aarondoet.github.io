@@ -45,6 +45,7 @@ description: Guild Stats
 		
 		if(g){
 			document.title = "Guild Stats: " + g.guildName + " | l0c4lb0t";
+			document.getElementById("page title").innerHTML = escapeHtml(g.guildName);
 			document.getElementById("settings container").innerHTML = "";
 			$(".settings.container").append(
 				$(`<div class="settings panel">
@@ -79,6 +80,7 @@ description: Guild Stats
 		}else{
 			document.title = "Guild not found | l0c4lb0t";
 			document.getElementById("settings container").innerHTML = "There are no stats for this guild available.";
+			document.getElementById("page title").innerHTML = "Guild not found";
 		}
 		
 		updateUpdateTime();
