@@ -50,7 +50,7 @@ description: Guild Stats
 			$(".settings.container").append(
 				$(`<div class="settings panel">
 					<div class="settings title">Bot Prefix</div>
-					<div class="settings value">${escapeHtml(g.botPrefix) || "="}</div>
+					<div class="settings value">${escapeHtml(g.botPrefix || "=")}</div>
 				</div>`),
 				$(`<div class="settings panel">
 					<div class="settings title">User Count</div>
