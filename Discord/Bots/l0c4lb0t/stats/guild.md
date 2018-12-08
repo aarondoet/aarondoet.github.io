@@ -35,17 +35,46 @@ description: Guild Stats
         vars[key] = value;
     });
 	var gId = vars["g"];
+	var g;
 	
 	updateStats();
 	
 	function showStats(){
 		if(editedTimeTimer) window.clearInterval(editedTimeTimer);
-		var g = guildStats[gId];
+		g = guildStats[gId];
 		
 		if(g){
 			document.title = "Guild Stats: " + g.guildName + " | l0c4lb0t";
+			document.getElementById("settings container").innerHTML = "";
+			$(".settings.container").append(
+				$(`<div class="settings panel">
+					<div class="settings title">Bot Prefix</div>
+					<div class="settings value">${g.botPrefix || "="}</div>
+				</div>`),
+				$(`<div class="settings panel">
+					<div class="settings title">Has Public Channel</div>
+					<div class="settings value">${g.publicChannel ? "Yes" : "No"}</div>
+				</div>`),
+				$(`<div class="settings panel">
+					<div class="settings title">Sent Message Count</div>
+					<div class="settings value">${g.sentMessageCount || "0"}</div>
+				</div>`),
+				$(`<div class="settings panel">
+					<div class="settings title">Sent Public Message Count</div>
+					<div class="settings value">${g.sentPublicMessageCount || "0"}</div>
+				</div>`),
+				$(`<div class="settings panel">
+					<div class="settings title">Used Command Count</div>
+					<div class="settings value">${g.sentCommandCount || "0"}</div>
+				</div>`),
+				$(`<div class="settings panel">
+					<div class="settings title">Used Unknown Command Count</div>
+					<div class="settings value">${g.sentUnknownCommandCount || "0"}</div>
+				</div>`)
+			);
 		}else{
 			document.title = "Guild not found | l0c4lb0t";
+			document.getElementById("settings container").innerHTML = "There are no stats for this guild available.";
 		}
 		
 		editedTimeTimer = window.setInterval(function(){
@@ -81,7 +110,7 @@ description: Guild Stats
 	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
-<div id="settings container" style="position:relative;">
+<div id="settings container" class="settings container" style="position:relative;">
 	<div class="settings panel">
 		<div class="settings title">Titel 1</div>
 		<div class="settings value">Wert 1</div>
