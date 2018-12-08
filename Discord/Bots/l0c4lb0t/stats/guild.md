@@ -110,25 +110,4 @@ description: Guild Stats
 	 }
 </script>
 <div id="lastEdited">Stats not loaded yet</div>
-<div id="settings container" class="settings container" style="position:relative;">
-	<div class="settings panel">
-		<div class="settings title">Titel 1</div>
-		<div class="settings value">Wert 1</div>
-	</div>
-	<div class="settings panel">
-		<div class="settings title">Titel 2</div>
-		<div class="settings value">Wert 2</div>
-	</div>
-	<div class="settings panel">
-		<div class="settings title">Titel 3</div>
-		<div class="settings value">Wert 3</div>
-	</div>
-	<div class="settings panel">
-		<div class="settings title">Titel 4</div>
-		<div class="settings value">Wert 4</div>
-	</div>
-	<div class="settings panel">
-		<div class="settings title">Titel 5</div>
-		<div class="settings value">Wert 5</div>
-	</div>
-</div>
+<div id="settings container" class="settings container" style="position:relative;"></div>
