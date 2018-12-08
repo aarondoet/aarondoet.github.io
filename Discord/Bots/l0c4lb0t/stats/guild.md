@@ -3,6 +3,7 @@ layout: default
 published: true
 title: l0c4lb0t
 description: Guild Stats
+iconUrl: ./assets/pb.jpg
 ---
 <style>
 	.settings.panel:nth-child(even){
