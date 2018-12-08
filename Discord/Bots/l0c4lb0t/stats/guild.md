@@ -52,6 +52,10 @@ description: Guild Stats
 					<div class="settings value">${g.botPrefix || "="}</div>
 				</div>`),
 				$(`<div class="settings panel">
+					<div class="settings title">User Count</div>
+					<div class="settings value">${Object.keys(g.user).length}</div>
+				</div>`),
+				$(`<div class="settings panel">
 					<div class="settings title">Has Public Channel</div>
 					<div class="settings value">${g.publicChannel ? "Yes" : "No"}</div>
 				</div>`),
