@@ -51,7 +51,7 @@ iconUrl: ../assets/pb.jpg
 			if(gu && u){
 				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
 				document.getElementById("page title").innerHTML = escapeHtml(u.username);
-				document.getElementById("settings container title guild").innerHTML = `Settings for guild <a href="./guild.html?g=${gId}">${escapeHtml(g.guildName)}</a>`;
+				document.getElementById("settings container title guild").innerHTML = `Stats for guild <a href="./guild.html?g=${gId}">${escapeHtml(g.guildName)}</a>`;
 				document.getElementById("settings container guild").innerHTML = "";
 				$(".settings.container.guild").append(
 					$(`<div class="settings panel">
@@ -104,7 +104,7 @@ iconUrl: ../assets/pb.jpg
 					$(".settings.container.guildlist").append(
 						$(`<div class="settings panel">
 							<div class="settings title"><a href="./user.html?g=${ugId}&u=${uId}">${ug.guildName}</a></div>
-							<div class="settings value">${Object.keys(ug.user).length}</div>
+							<div class="settings value">${Object.keys(ug.user).length} users</div>
 						</div>`)
 					);
 				}
