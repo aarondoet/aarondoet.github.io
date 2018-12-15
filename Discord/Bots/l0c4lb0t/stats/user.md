@@ -100,7 +100,7 @@ iconUrl: ../assets/pb.jpg
 				);
 				document.getElementById("settings container guildlist").innerHTML = "";
 				for(var ugId of u.guilds){
-					var ug = g[ugId];
+					var ug = guildStats[ugId];
 					$(".settings.container.guildlist").append(
 						$(`<div class="settings panel">
 							<div class="settings title"><a href="./user.html?g=${ug}&u=${uId}">${ug.guildName}</div>
