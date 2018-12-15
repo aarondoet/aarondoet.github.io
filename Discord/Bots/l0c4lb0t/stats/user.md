@@ -98,6 +98,16 @@ iconUrl: ../assets/pb.jpg
 						<div class="settings value">${u.sentUnknownCommandCount || "0"}</div>
 					</div>`)
 				);
+				document.getElementById("settings container guildlist").innerHTML = "";
+				for(var ugId of u.guilds){
+					var ug = g[ugId];
+					$(".settings.container.guildlist").append(
+						$(`<div class="settings panel">
+							<div class="settings title"><a href="./user.html?g=${ug}&u=${uId}">${ug.guildName}</div>
+							<div class="settings value">${Object.keys(ug.user).length}</div>
+						</div>`)
+					);
+				}
 			}else{
 				document.title = "User not found | l0c4lb0t";
 			}
@@ -150,6 +160,13 @@ iconUrl: ../assets/pb.jpg
 </div>
 <h1 id="settings container title general" style="margin-top:30px;">General stats</h1>
 <div id="settings container general" class="settings container general" style="position:relative;">
+	<div class="settings panel">
+		<div class="settings title">Stats not loaded yet</div>
+		<div class="settings value">Stats not loaded yet</div>
+	</div>
+</div>
+<h1 id="settings container title guildlist" style="margin-top:30px;">Guilds</h1>
+<div id="settings container guildlist" class="settings container guildlist" style="position:relative;">
 	<div class="settings panel">
 		<div class="settings title">Stats not loaded yet</div>
 		<div class="settings value">Stats not loaded yet</div>
