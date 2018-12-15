@@ -78,6 +78,10 @@ iconUrl: ../assets/pb.jpg
 				document.getElementById("settings container general").innerHTML = "";
 				$(".settings.container.general").append(
 					$(`<div class="settings panel">
+						<div class="settings title">User Name</div>
+						<div class="settings value">${escapeHtml(u.username)}</div>
+					</div>`),
+					$(`<div class="settings panel">
 						<div class="settings title">Sent Message Count</div>
 						<div class="settings value">${u.sentMessageCount || "0"}</div>
 					</div>`),
