@@ -51,13 +51,12 @@ iconUrl: ../assets/pb.jpg
 			if(gu && u){
 				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
 				document.getElementById("page title").innerHTML = escapeHtml(u.username);
-				document.getElementById("settings container guild").innerHTML = "";
 				document.getElementById("settings container title guild").innerHTML = "Settings for guild \"" + escapeHtml(g.guildName) + "\"";
+				document.getElementById("settings container guild").innerHTML = "";
 				$(".settings.container.guild").append(
-					$(`<div>`),
 					$(`<div class="settings panel">
 						<div class="settings title">Guild Name</div>
-						<div class="settings value">${escapeHtml(u.guildName)}</div>
+						<div class="settings value">${escapeHtml(gu.guildName)}</div>
 					</div>`),
 					$(`<div class="settings panel">
 						<div class="settings title">Sent Message Count</div>
@@ -74,6 +73,25 @@ iconUrl: ../assets/pb.jpg
 					$(`<div class="settings panel">
 						<div class="settings title">Used Unknown Command Count</div>
 						<div class="settings value">${gu.sentUnknownCommandCount || "0"}</div>
+					</div>`)
+				);
+				document.getElementById("settings container general").innerHTML = "";
+				$(".settings.container.general").append(
+					$(`<div class="settings panel">
+						<div class="settings title">Sent Message Count</div>
+						<div class="settings value">${u.sentMessageCount || "0"}</div>
+					</div>`),
+					$(`<div class="settings panel">
+						<div class="settings title">Sent Public Message Count</div>
+						<div class="settings value">${u.sentPublicMessageCount || "0"}</div>
+					</div>`),
+					$(`<div class="settings panel">
+						<div class="settings title">Used Command Count</div>
+						<div class="settings value">${u.sentCommandCount || "0"}</div>
+					</div>`),
+					$(`<div class="settings panel">
+						<div class="settings title">Used Unknown Command Count</div>
+						<div class="settings value">${u.sentUnknownCommandCount || "0"}</div>
 					</div>`)
 				);
 			}else{
