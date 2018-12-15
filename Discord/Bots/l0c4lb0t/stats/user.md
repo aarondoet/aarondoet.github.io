@@ -56,7 +56,7 @@ iconUrl: ../assets/pb.jpg
 				$(".settings.container.guild").append(
 					$(`<div class="settings panel">
 						<div class="settings title">Guild Name</div>
-						<div class="settings value">${escapeHtml(gu.guildName)}</div>
+						<div class="settings value">${escapeHtml(gu.guildname)}</div>
 					</div>`),
 					$(`<div class="settings panel">
 						<div class="settings title">Sent Message Count</div>
