@@ -51,7 +51,7 @@ iconUrl: ../assets/pb.jpg
 			if(gu && u){
 				document.title = "User Stats: " + u.username + " - " + g.guildName + " | l0c4lb0t";
 				document.getElementById("page title").innerHTML = escapeHtml(u.username);
-				document.getElementById("settings container title guild").innerHTML = `Settings for guild &quot;<a href="./guild.html?g=${gId}">${escapeHtml(g.guildName)}</a>$quot;
+				document.getElementById("settings container title guild").innerHTML = `Settings for guild &quot;<a href="./guild.html?g=${gId}">${escapeHtml(g.guildName)}</a>$quot;`;
 				document.getElementById("settings container guild").innerHTML = "";
 				$(".settings.container.guild").append(
 					$(`<div class="settings panel">
