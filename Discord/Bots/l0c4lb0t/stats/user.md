@@ -103,7 +103,7 @@ iconUrl: ../assets/pb.jpg
 					var ug = guildStats[ugId];
 					$(".settings.container.guildlist").append(
 						$(`<div class="settings panel">
-							<div class="settings title"><a href="./user.html?g=${ug}&u=${uId}">${ug.guildName}</div>
+							<div class="settings title"><a href="./user.html?g=${ugId}&u=${uId}">${ug.guildName}</a></div>
 							<div class="settings value">${Object.keys(ug.user).length}</div>
 						</div>`)
 					);
