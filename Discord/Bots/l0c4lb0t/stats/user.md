@@ -110,7 +110,8 @@ iconUrl: ../assets/pb.jpg
 				}
 			}else{
 				document.title = "User not found | l0c4lb0t";
-				document.getElementById("settings container guild").innerHTML = "<a href=\".guild.html?g=" + gId + "\">Here are the guild stats</a>";
+				document.getElementById("settings container title guild").innerHTML = "User not found";
+				document.getElementById("settings container guild").innerHTML = "<a href=\".guild.html?g=" + gId + "\">Here are the stats for that guild</a>";
 				document.getElementById("settings container title general").innerHTML = "";
 				document.getElementById("settings container title guildlist").innerHTML = "";
 				document.getElementById("settings container general").innerHTML = "";
