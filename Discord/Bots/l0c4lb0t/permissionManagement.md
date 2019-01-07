@@ -4,7 +4,7 @@ This bot has some options for you to control the permissions the users have.
 If you are too lazy to set the permissions up there are the default permissions. When a user has the default Discord permission *Manage Messages* or *Manage Roles* he can perform some actions by default.
 To make sure you can precisely adjust the permissions I gave you the opportunity to do so. You can put users AND roles on a whitelist or blacklist.
 
-### Rules
+## Rules
 
 * As long as there is no user and no role in the whitelist, the default permissions apply. The user is blocked from the action if he or a role of him is in the blacklist.
 * As soon as you add a role or user to the whitelist, the default permissions are not used anymore.
@@ -12,7 +12,7 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 * The blacklist has higher priority than the whitelist. If a user has a blacklisted and a whitelisted role, he can't perform the action.
 * Users with the permission *Administrator* have all permissions, regardless of any white- or blacklist.
 
-### Change permissions
+## Change permissions
 * List permissions for a specific action: `=permissions list <action>`
 * Add user to the whitelist: `=permission add <action> user whitelist <@user>`
 * Add user to the blacklist: `=permission add <action> user blacklist <@user>`
@@ -26,7 +26,7 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 
 Adding a user or role to on whitelist or blacklist will automatically remove it from the other list.
 
-### Default permissions
+## Default permissions
 The actions in the table are related to a command (like *customCommand*, even if the actual command is only *=command*, or it has a self-explaining name like *vote* and is for a non-command-action). They are the same name as the ones you have to use in the *permissions* command.
 
 | Action                   | Default Permission |
