@@ -1,7 +1,7 @@
 # Permission Management
-I think it is very important to control the permissions users have. Maybe you have a patreon role and only they should be able to perform an action.
-This bot has some options for you to control the permissions the users have.
-If you are too lazy to set the permissions up there are the default permissions. When a user has the default Discord permission *Manage Messages* or *Manage Roles* he can perform some actions by default.
+I think it is very important to control the permissions users have. Maybe you have a patreon role and only they should be able to perform an action.<br>
+This bot has some options for you to control the permissions the users have.<br>
+If you are too lazy to set the permissions up there are the default permissions. When a user has the default Discord permission *Manage Messages* or *Manage Roles* he can perform some actions by default.<br>
 To make sure you can precisely adjust the permissions I gave you the opportunity to do so. You can put users AND roles on a whitelist or blacklist.
 
 ## Rules
@@ -14,6 +14,7 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 
 ## Change permissions
 * List permissions for a specific action: `=permissions list <action>`
+
 * Add user to the whitelist: `=permission add <action> user whitelist <@user>`
 * Add user to the blacklist: `=permission add <action> user blacklist <@user>`
 * Add role to the whitelist: `=permission add <action> user whitelist <@role>`
@@ -31,23 +32,23 @@ The actions in the table are related to a command (like *customCommand*, even if
 
 | Action                   | Default Permission |
 |--------------------------|--------------------|
-| dynamicVoiceChannel      | Manage Channels    |
 | changeBotPrefix          | Administrator      |
-| deleteCommands           | Manage Messages    |
-| ignoreBots               | Manage Permissions |
-| publicChannel            | Manage Channels    |
 | language                 | Administrator      |
 | changePermissions        | Administrator      |
-| unknownCommandMessage    | Manage Messages    |
-| allowMentionCommands     | Manage Messages    |
-| resetNicknames           | Manage Nicknames   |
+| customCommand            | Manage Server      |
+| reactionRole             | Manage Roles       |
 | joinRole                 | Manage Roles       |
 | joinMessage              | Manage Messages    |
 | leaveMessage             | Manage Messages    |
-| customCommand            | Manage Server      |
-| blockChannel             | Manage Channels    |
-| reactionRole             | Manage Roles       |
 | sendEmbed                | Manage Messages    |
+| deleteCommands           | Manage Messages    |
+| ignoreBots               | Manage Messages    |
+| unknownCommandMessage    | Manage Messages    |
+| allowMentionCommands     | Manage Messages    |
+| blockChannel             | Manage Channels    |
+| dynamicVoiceChannel      | Manage Channels    |
+| publicChannel            | Manage Channels    |
+| resetNicknames           | Manage Nicknames   |
 | userLimit (only for DVC) | Everyone           |
 | remind                   | Everyone           |
 | randomNumber             | Everyone           |
