@@ -10,9 +10,49 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 * As soon as you add a role or user to the whitelist, the default permissions are not used anymore.
 * The user whitelist/blacklist is more important than the list for roles. When a user has a whitelisted role but he is blacklisted, he can't perform the action.
 * The blacklist has higher priority than the whitelist. If a user has a blacklisted and a whitelisted role, he can't perform the action.
+* Users with the permission *Administrator* have all permissions, regardless of any white- or blacklist.
 
 ### Change permissions
-To change the permissions for an action, you have to use `=permission`
+* List permissions for a specific action: `=permissions list <action>`
+* Add user to the whitelist: `=permission add <action> user whitelist <@user>`
+* Add user to the blacklist: `=permission add <action> user blacklist <@user>`
+* Add role to the whitelist: `=permission add <action> user whitelist <@role>`
+* Add role to the blacklist: `=permission add <action> user blacklist <@role>`
+
+* Remove user to the whitelist: `=permission remove <action> user whitelist <@user>`
+* Remove user to the blacklist: `=permission remove <action> user blacklist <@user>`
+* Remove role to the whitelist: `=permission remove <action> user whitelist <@role>`
+* Remove role to the blacklist: `=permission remove <action> user blacklist <@role>`
+
+Adding a user or role to on whitelist or blacklist will automatically remove it from the other list.
 
 ### Default permissions
+The actions in the table are related to a command (like *customCommand*, even if the actual command is only *=command*, or it has a self-explaining name like *vote* and is for a non-command-action). They are the same name as the ones you have to use in the *permissions* command.
 
+| Action                   | Default Permission |
+|--------------------------|--------------------|
+| dynamicVoiceChannel      | Manage Channels    |
+| changeBotPrefix          | Administrator      |
+| deleteCommands           | Manage Messages    |
+| ignoreBots               | Manage Permissions |
+| publicChannel            | Manage Channels    |
+| language                 | Administrator      |
+| changePermissions        | Administrator      |
+| unknownCommandMessage    | Manage Messages    |
+| allowMentionCommands     | Manage Messages    |
+| resetNicknames           | Manage Nicknames   |
+| joinRole                 | Manage Roles       |
+| joinMessage              | Manage Messages    |
+| leaveMessage             | Manage Messages    |
+| customCommand            | Manage Server      |
+| blockChannel             | Manage Channels    |
+| reactionRole             | Manage Roles       |
+| sendEmbed                | Manage Messages    |
+| userLimit (only for DVC) | Everyone           |
+| remind                   | Everyone           |
+| randomNumber             | Everyone           |
+| choose                   | Everyone           |
+| createPoll               | Everyone           |
+| vote                     | Everyone           |
+| multiVote                | Noone              |
+| voteWhenEnded            | Noone              |
