@@ -36,7 +36,7 @@ The actions in the table are related to a command (like *customCommand*, even if
 | language                 | Administrator      |
 | changePermissions        | Administrator      |
 | customCommand            | Manage Server      |
-| reactionRole             | Manage Roles       |
+| reactionRole (command)   | Manage Roles       |
 | joinRole                 | Manage Roles       |
 | joinMessage              | Manage Messages    |
 | leaveMessage             | Manage Messages    |
@@ -49,6 +49,7 @@ The actions in the table are related to a command (like *customCommand*, even if
 | dynamicVoiceChannel      | Manage Channels    |
 | publicChannel            | Manage Channels    |
 | resetNicknames           | Manage Nicknames   |
+| reactionRoles (get role) | Everyone           |
 | userLimit (only for DVC) | Everyone           |
 | remind                   | Everyone           |
 | randomNumber             | Everyone           |
