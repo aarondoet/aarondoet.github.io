@@ -1,3 +1,9 @@
+---
+layout: default
+published: true
+title: Permission Management
+description: How the permissions for l0c4lb0t work
+---
 # Permission Management
 I think it is very important to control the permissions users have. Maybe you have a patreon role and only they should be able to perform an action.<br>
 This bot has some options for you to control the permissions the users have.<br>
@@ -58,3 +64,5 @@ The actions in the table are related to a command (like *customCommand*, even if
 | vote                     | Everyone           |
 | multiVote                | Noone              |
 | voteWhenEnded            | Noone              |
+
+If you have questions about the permissions, ask me [here](https://l0c4lh057.github.io/discord.html)

@@ -12,5 +12,8 @@ If you dont want that this data is tracked, you can leave the guild or kick the 
 
 ## [Invite the bot](https://discordapp.com/oauth2/authorize?client_id=516976969867460630&permissions=2146958591&scope=bot){:target="_blank"}
 
+## Commands
+All the commands are listed on [this](./commands.html) site.
+
 ## Permission System
 If you want to get more information about the permission system I made for the bot, check out [this](./permissionManagement.html) link.
