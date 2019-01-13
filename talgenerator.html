@@ -14,8 +14,11 @@
 			sliderDistance = createSlider(0, 400, 0, 1);
 			sliderDistance.position(810, 10);
 			sliderTiltL = createSlider(0, 60, 20, 0.1);
+			sliderTiltL.position(810, 40);
 			sliderTiltR = createSlider(0, 60, 20, 0.1);
+			sliderTiltR.position(810, 70);
 			sliderWaterHeight = createSlider(0, 100, 20, 1);
+			sliderWaterHeight.position(810, 100);
 			angleMode(DEGREES);
 		}
 		function draw(){
@@ -44,6 +47,8 @@
 			rotate(-sliderTiltR.value());
 			
 			translate(-sliderDistance.value()/2, 0);
+			
+			box(1000, 0, 400);
 			
 			fill(0, 0, 255);
 			translate(0, -sliderWaterHeight.value());
