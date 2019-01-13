@@ -4,7 +4,12 @@ published: true
 title: Commands
 description: What commands you can use with l0c4lb0t
 ---
+# Commands
 <!-- here should be the quickjump links -->
+- [Administration](#administration)
+  - [prefix](#prefix)
+  - [language](#language)
+  - [permissions](#permissions)
 
 ## Administration
 
