@@ -2,7 +2,7 @@
 layout: default
 published: true
 title: Commands
-description: What commands you can use with l0c4lb0t
+description: Commands you can use with l0c4lb0t
 ---
 # Commands
 <!-- here should be the quickjump links -->
