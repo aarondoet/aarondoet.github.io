@@ -1,0 +1,140 @@
+html  {
+    background: #000;
+    color: #aaa;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+/* sidenav */
+#sidenav a {
+    border-left-color: orange;
+}
+
+#sidenav a.active {
+    font-weight: 600;
+}
+
+/* content */
+
+.divider {
+    background: #aaa;
+}
+
+#section-0 {
+    background: #000;
+    color: white;
+    display: inline-block;
+}
+
+.center {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+#kaufkraftGraph {
+    width: 85%;
+}
+
+#section-2 #card-3 .card-content img {
+    width: 70%;
+}
+
+.green-underline {
+    border-bottom: 2px solid #00B050;
+}
+
+.blue-underline {
+    border-bottom: 2px solid #0070C0;
+}
+
+.orange-underline {
+    border-bottom: 2px solid #e5964c;
+}
+
+.darkblue-underline {
+    border-bottom: 2px solid #496eb7;
+}
+
+.red-underline {
+    border-bottom: 2px solid #c34e4e;
+}
+
+h1 {
+    font-family: 'Muli';
+    color: #fff;
+}
+
+h2 {
+    font-family: 'Muli ExtraLight';
+    color: #fff;
+}
+
+h3 {
+    font-family: 'Muli';
+    color: #fff;
+}
+
+h3::after {
+    margin-left: 35vw;
+    content: "";
+    height: 3px;
+    width: 50px;
+    display: block;
+    background: none repeat scroll 0 0 orange;
+    transition: margin-left 2s, width 2s;
+    -webkit-transition: margin-left 2s, width 2s;
+}
+
+h3.enteredViewport::after {
+    margin-left: 0;
+    width: 480px;
+}
+
+h6 {
+    color: #9e9e9e;
+}
+
+/* footer */
+footer {
+    background: #3e4142;
+}
+
+footer a {
+    color: orange;
+}
+
+/* content */
+.section {
+    overflow: hidden;
+}
+
+.section .short {
+    display: none;
+}
+
+.expandable {
+    display: none;
+}
+
+.card {
+    background-color: #3d3e3f;
+}
+
+.card .btn {
+    background: #3d3e3f;
+}
+
+.card .btn:hover {
+    background: orange;
+}
+
+.card .btn-floating i {
+    color: #9e9e9e;
+}
+
+.card .btn-floating:hover i {
+    color: #fff;
+}
