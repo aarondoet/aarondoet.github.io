@@ -1,7 +1,7 @@
 new MutationObserver(function(mut){
 	let pluginList = $(".settings-closed.ui-switch-item");
 	for(let i = 0; i < pluginList.length; i++){
-		let plugin = pluuginList[i];
+		let plugin = pluginList[i];
 		var pluginAuthor = plugin.querySelector(".bda-author");
 		var pluginDescription = plugin.querySelector(".bda-description");
 		if (plugin.hasClass("settings-closed") && pluginAuthor != null && pluginDescription != null) {
