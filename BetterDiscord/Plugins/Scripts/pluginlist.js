@@ -1,3 +1,4 @@
+/* Yes, I know it is stolen from DevilBro's BDFDB, but I like it and so I added it for me too. Full credits go to DevilBro */
 new MutationObserver(function(mut){
 	let pluginList = $(".settings-closed.ui-switch-item");
 	for(let i = 0; i < pluginList.length; i++){
