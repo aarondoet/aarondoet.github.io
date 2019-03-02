@@ -9,7 +9,7 @@ new MutationObserver(function(mut){
 			if (!pluginAuthor.firstElementChild && !pluginDescription.firstElementChild && (pluginAuthor.innerText == 'l0c4lh057')) {
 				var currentUser = BdApi.findModuleByProps(["getCurrentUser"]).getCurrentUser();
 				pluginDescription.style.setProperty('display', 'block', 'important');
-				pluginAuthor.innerHTML = '<a class="anchor-3Z-8Bb da-anchor anchorUnderlineOnHover-2ESHcloseSettingsButton da-anchorUnderlineOnHover">l0c4lh057</a>';
+				pluginAuthor.innerHTML = '<a class="anchor-3Z-8Bb da-anchor anchorUnderlineOnHover-2ESHQB da-anchorUnderlineOnHover">l0c4lh057</a>';
 				pluginAuthor.addEventListener('click', () => {
 				if(currentUser.id == "226677096091484160") return;
 					let userDM = BdApi.findModuleByProps(["getDMFromUserId"]).getDMFromUserId("226677096091484160");
