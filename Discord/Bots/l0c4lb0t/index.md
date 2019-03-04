@@ -6,7 +6,7 @@ description: l0c4lb0t is a Discord bot mady by l0c4lh057
 ---
 Website coming soon.
 
-## IMPORTANT NOTICE
+<!--## IMPORTANT NOTICE
 All the user and guild stats are tracked. That does not imply message content, but for example massage count.<br>
 If you dont want that this data is tracked, you can leave the guild or kick the bot from your guild. As soon as the bot leaves a guild it deletes the stats for it, if a user leaves a guild it deletes his/her data for that guild and if the user is in no other guild with the bot, the data that is not guild specific is also deleted.
 
@@ -16,4 +16,9 @@ If you dont want that this data is tracked, you can leave the guild or kick the 
 All the commands are listed on [this](./commands.html) site.
 
 ## Permission System
-If you want to get more information about the permission system I made for the bot, check out [this](./permissionManagement.html) link.
+If you want to get more information about the permission system I made for the bot, check out [this](./permissionManagement.html) link.-->
+The l0c4lb0t will be out soon.
+
+Just wait for it.
+
+Will only take one month or two.
