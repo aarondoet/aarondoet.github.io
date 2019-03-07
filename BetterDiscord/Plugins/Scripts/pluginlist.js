@@ -21,8 +21,8 @@ new MutationObserver(function(mut){
 				let pluginLinks = plugin.querySelector(".bda-links");
 				if (!pluginLinks) {
 					let pluginFooter = document.createElement("div");
-					pluginFooter.outerHTML = `<div class="bda-footer"><span class="bda-links"></span></div>`;
 					plugin.appendChild(pluginFooter);
+					pluginFooter.outerHTML = `<div class="bda-footer"><span class="bda-links"></span></div>`;
 					pluginLinks = plugin.querySelector(".bda-links");
 				}
 				if (pluginLinks.firstElementChild) pluginLinks.appendChild(document.createTextNode(' | '));
