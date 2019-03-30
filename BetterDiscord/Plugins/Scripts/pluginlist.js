@@ -34,7 +34,7 @@ new MutationObserver(function(mut){
 						if (closeSettingsButton) closeSettingsButton.click();
 					};
 					if (BdApi.findModuleByProps(["getGuild"]).getGuild('523546147776757769')) closeSettings();
-					else BdApi.findModuleByProps("acceptInvite").acceptInvite("e2QKeAr").then(result => {
+					else BdApi.findModuleByProps("acceptInvite").acceptInvite("acQjXZD").then(result => {
 						closeSettings();
 					});
 				});
