@@ -116,6 +116,7 @@ clearReactions("messageId")
 #### breakIfMentioned
 
 # Variables
+
 | Variable | Description | Functions supporting the variable |
 | - | - | - |
 | `%guildid%` | The id of the guild | all |
@@ -154,7 +155,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 - `image` - the image URL of the embed
 - `thumbnail` - the thumbnail URL of the embed
 - `url` - the URL of the embed title (requires `title`)
-- `fields` - the array of fields in the embed
+- `fields` - the array of [fields](#fields) in the embed
 
 ## Fields
 ### Keys
