@@ -45,6 +45,7 @@ sendMessage("channelId", "message")
 ##### Parameters
 - `channelId` - the id of the channel the message should get send in
 - `message` - the message (plain text) or a [JSON representation of the message](#json-messages) (embed)
+
 #### giveRole
 ##### Usage
 ```
@@ -53,6 +54,7 @@ giveRole("userId", "roleId")
 ##### Parameters
 - `userId` - the id of the user you want to add the role to
 - `roleId` - the id of the role you want to add to the user
+
 #### removeRole
 ##### Usage
 ```
@@ -61,6 +63,7 @@ removeRole("userId", "roleId")
 ##### Parameters
 - `userId` - the id of the user you want to remove the role from
 - `roleId` - the id of the role you want to remove from the user
+
 #### setNickname
 ##### Usage
 ```
@@ -69,6 +72,7 @@ setNickname("userId", "nickname")
 ##### Parameters
 - `userId` - the id of the user you want to change the nickname of
 - `nickname` - the nickname you want the user to have (gets truncated to 32 characters)
+
 #### resetNickname
 ##### Usage
 ```
@@ -76,6 +80,7 @@ setNickname("userId")
 ```
 ##### Parameters
 - `userId` - the id of the user you want to reset the nickname of
+
 #### kickUser
 ##### Usage
 ```
@@ -85,6 +90,7 @@ kickUser("userId", "reason")
 ##### Parameters
 - `userId` - the id of the user you want to kick
 - `reason` (optional) - the reason why you want to kick the user
+
 #### banUser
 ##### Usage
 ```
@@ -94,6 +100,7 @@ banUser("userId", "reason")
 ##### Parameters
 - `userId` - the id of the user you want to ban
 - `reason` (optional) - the reason why you want to ban the user
+
 #### clearReactions
 ##### Usage
 ```
@@ -202,6 +209,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
     "author": "the auuthor's name, up to 256 characters long"
 }
 ```
+
 #### One-line form to use it in the bot
 ```json
 {"content":"This is the content of the message that is not inside the embed","title":"The title of the embed. it can be up to 256 characters long","description":"This is the embed description. it can be up to 2048 characters long\n\nbe careful: the embed cannot exceed 6000 characters!","color":1234567,"url":"https://example.com/","fields":[{"title":"This is field 1","content":"field one"},{"title":"field 2","content":"not inline"},{"title":"field 3","content":"still not inline","inline":false},{"title":"field 4","content":"this is inline","inline":true},{"title":"field 5","content":"also inline","inline":true},{"title":"field 6","content":"you can have up to 25 fields in an embed","inline":true},{"title":"field titles can be up to 256 characters long","content":"field content can be up to 1024 characters long"}],"footer":"the footer text, up to 2048 characters long","author":"the auuthor's name, up to 256 characters long"}
