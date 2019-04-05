@@ -156,7 +156,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 - `inline` - wether the field should be inline or not (`false` if not set)
 
 ## Example
-In human-readable form
+#### Human-readable form
 ```json
 {
     "content": "This is the content of the message that is not inside the embed",
@@ -202,9 +202,9 @@ In human-readable form
     "author": "the auuthor's name, up to 256 characters long"
 }
 ```
-In one-line form to use it in the bot
+#### One-line form to use it in the bot
 ```json
 {"content":"This is the content of the message that is not inside the embed","title":"The title of the embed. it can be up to 256 characters long","description":"This is the embed description. it can be up to 2048 characters long\n\nbe careful: the embed cannot exceed 6000 characters!","color":1234567,"url":"https://example.com/","fields":[{"title":"This is field 1","content":"field one"},{"title":"field 2","content":"not inline"},{"title":"field 3","content":"still not inline","inline":false},{"title":"field 4","content":"this is inline","inline":true},{"title":"field 5","content":"also inline","inline":true},{"title":"field 6","content":"you can have up to 25 fields in an embed","inline":true},{"title":"field titles can be up to 256 characters long","content":"field content can be up to 1024 characters long"}],"footer":"the footer text, up to 2048 characters long","author":"the auuthor's name, up to 256 characters long"}
 ```
-Preview:
-![Preview of the message][./assets/jsonmessageexample.jpg "How this message will look like"]
+#### Preview
+![Preview of the message](./assets/jsonmessageexample.jpg "How this message will look like")
