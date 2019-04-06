@@ -76,7 +76,7 @@ setNickname("userId", "nickname")
 #### resetNickname
 ##### Usage
 ```
-setNickname("userId")
+resetNickname("userId")
 ```
 ##### Parameters
 - `userId` - the id of the user you want to reset the nickname of
@@ -111,9 +111,90 @@ clearReactions("messageId")
 
 ### Logic
 
+There are some functions that stop script execution and give you the possibility to only do something if a condition is true.<br>
+They are called `continueIf<...>` and `breakIf<...>`. The `continueIf` function will continue script execution if the condition is true and stop it if the condition is false. `breakIf` on the other hand does the exact opposite of that. If the condition is true it will stop script execution and if the condition is false it continues.<br>
+If you need something like a `if this then ..., otherwise ...` you need to use two scripts. One needs to have a `continueIf` and the other one a `breakIf` with the exact same arguments.
+
+#### IfEqual
+##### Usage
+```
+continueIfEqual("argument1", "argument2")
+breakIfEqual("argument1", "argument2")
+```
+##### Returns
+- `true` if both arguments are the same
+
+#### IfStartsWith
+##### Usage
+```
+continueIfStartsWith("toCheck", "startsWith")
+breakIfStartsWith("toCheck", "startsWith")
+```
+##### Parameters
+- `toCheck` - the value you want to check
+- `startsWith` - the value `toCheck` has to start with
+##### Returns
+- `true` if `toCheck` starts with `startsWith`
+
+#### IfEndsWith
+##### Usage
+```
+continueIfEndsWith("toCheck", "endsWith")
+breakIfEndsWith("toCheck", "endsWith")
+```
+##### Parameters
+- `toCheck` - the value you want to check
+- `endsWith` - the value `toCheck` has to end with
+##### Returns
+- `true` if `toCheck` ends with `endsWith`
+
+#### IfContains
+##### Usage
+```
+continueIfContains("toCheck", "contains")
+breakIfContains("toCheck", "contains")
+```
+##### Parameters
+- `toCheck` - the value you want to check
+- `contains` - the value `toCheck` has to contain
+##### Returns
+- `true` if `toCheck` contains `contains`
+
 ## Event specific
-### onMessage
-#### breakIfMentioned
+
+### Logic
+
+#### IfMentioned
+##### Usage
+```
+continueIfMentioned("messageId", "channelId")
+breakIfMentioned("messageId", "channelId")
+continueIfMentioned("messageId", "userId")
+breakIfMentioned("messageId", "userId")
+continueIfMentioned("messageId", "roleId")
+breakIfMentioned("messageId", "roleId")
+```
+##### Parameters
+- `messageId` - the id of the message you want to check
+- `channelId` - the id of the channel you want to check for
+- `userId` - the id of the user you want to check for
+- `roleId` - the id of the role you want to check for (to check for `@everyone` use `everyone`, for `@here` use `here` as parameter)
+##### Returns
+- `true` if the message mentions the role/user/channel AND the user has the permission to mention it
+##### Supported events
+- onMessage
+
+#### IfUserHasRole
+##### Usage
+```
+continueIfUserHasRole("userId", "roleId")
+breakIfUserHasRole("userId", "roleId")
+```
+##### Parameters
+- `userId` - the user you want to check
+- `roleId` - the role you want to check the user for
+##### Returns
+- `true` if the user has the role
 
 # Variables
 
@@ -217,3 +298,34 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 ```
 #### Preview
 ![Preview of the message](./assets/jsonmessageexample.jpg "How this message will look like")
+
+# Example scripts
+## onMessage
+Delete messages that mention everyone and ban the user who wrote the message
+```
+continueIfMentions("%messageid%", "everyone")
+banUser("%userid%", "Mentioned @everyone")
+deleteMessage("%messageid%")
+```
+Give the user a role if he writes `-verify` in the verify channel (`1234567890` is the id of the role the user should get)
+```
+continueIfEqual("%content%", "-verify")
+continueIfEqual("%channelname%", "verify")
+giveRole("%userid%", "1234567890")
+```
+
+## onJoin
+Add `New - ` to the name of a joining user and give a role (`1234567890` is the id of the role the user should get)
+```
+setNickname("%userid%", "New - %username%")
+giveRole("%userid%", "1234567890")
+```
+Kick your friend when he joins
+```
+continueIfEqual("%userid%", "1234567890")
+kickUser("%userid%", "This is fun!")
+```
+Have a nice welcome message for your users
+```
+sendMessage("1234567890", "{"color":1234567, "title":"A new fighter", "description":"Hey everyone!\n%username% joined this server. Be nice to him!", "author":"%username%#%userdiscriminator%", "authorIcon":"%userpfp%"}")
+```
