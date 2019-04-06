@@ -133,6 +133,7 @@ breakIfStartsWith("toCheck", "startsWith")
 ##### Parameters
 - `toCheck` - the value you want to check
 - `startsWith` - the value `toCheck` has to start with
+
 ##### Returns
 - `true` if `toCheck` starts with `startsWith`
 
@@ -145,6 +146,7 @@ breakIfEndsWith("toCheck", "endsWith")
 ##### Parameters
 - `toCheck` - the value you want to check
 - `endsWith` - the value `toCheck` has to end with
+
 ##### Returns
 - `true` if `toCheck` ends with `endsWith`
 
@@ -157,6 +159,7 @@ breakIfContains("toCheck", "contains")
 ##### Parameters
 - `toCheck` - the value you want to check
 - `contains` - the value `toCheck` has to contain
+
 ##### Returns
 - `true` if `toCheck` contains `contains`
 
@@ -179,8 +182,10 @@ breakIfMentioned("messageId", "roleId")
 - `channelId` - the id of the channel you want to check for
 - `userId` - the id of the user you want to check for
 - `roleId` - the id of the role you want to check for (to check for `@everyone` use `everyone`, for `@here` use `here` as parameter)
+
 ##### Returns
 - `true` if the message mentions the role/user/channel AND the user has the permission to mention it
+
 ##### Supported events
 - onMessage
 
@@ -193,6 +198,7 @@ breakIfUserHasRole("userId", "roleId")
 ##### Parameters
 - `userId` - the user you want to check
 - `roleId` - the role you want to check the user for
+
 ##### Returns
 - `true` if the user has the role
 
