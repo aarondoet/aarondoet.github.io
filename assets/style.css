@@ -6,8 +6,8 @@ code.highlighter-rouge {
 }
 
 .title-anchor {
-    position: absolute;
-    left: -5px;
+    position: relative;
+    top: 2px;
     fill: #e8e8e8;
     visibility: hidden;
 }
