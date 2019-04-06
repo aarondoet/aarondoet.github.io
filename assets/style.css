@@ -4,3 +4,13 @@ code.highlighter-rouge {
     margin: 2px;
     border-radius: 7px;
 }
+
+.title-anchor {
+    position: absolute;
+    left: -5px;
+    fill: #e8e8e8;
+    visibility: hidden;
+}
+a:hover .title-anchor {
+    visibility: visible;
+}
