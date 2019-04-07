@@ -46,6 +46,28 @@ sendMessage("channelId", "message")
 - `channelId` - the id of the channel the message should get send in
 - `message` - the message (plain text) or a [JSON representation of the message](#json-messages) (embed)
 
+##### Returns
+- the id of the message that was sent
+
+#### deleteMessage
+##### Usage
+```
+deleteMessage("messageId")
+```
+##### Parameters
+- `messageId` - the id of the message you want to delete
+
+#### sendDM
+
+To prevent unwanted spam this function can only send DMs to users that are in your server at the time the function gets called.
+##### Usage
+```
+sendDM("userId", "message")
+```
+##### Parameters
+- `userId` - the id of the user you want to send the DM to
+- `message` - the message (plain text) or a [JSON representation of the message](#json-messages) (embed)
+
 #### giveRole
 ##### Usage
 ```
@@ -72,6 +94,9 @@ setNickname("userId", "nickname")
 ##### Parameters
 - `userId` - the id of the user you want to change the nickname of
 - `nickname` - the nickname you want the user to have (gets truncated to 32 characters)
+
+##### Returns
+- the new nickname (truncated)
 
 #### resetNickname
 ##### Usage
@@ -109,6 +134,34 @@ clearReactions("messageId")
 ##### Parameters
 - `messageId` - the id of the message you want to remove all reactions from
 
+#### createRole
+
+#### deleteRole
+
+#### createTextChannel
+
+#### createVoiceChannel
+
+#### createCategory
+
+#### deleteChannel
+
+#### joinVoiceChannel
+
+#### leaveVoiceChannel
+
+#### clearQueue
+
+#### playSong
+
+#### enqueueSong
+
+#### pauseSong
+
+#### continueSong
+
+#### skipSong
+
 ### Logic
 
 There are some functions that stop script execution and give you the possibility to only do something if a condition is true.<br>
@@ -121,8 +174,9 @@ If you need something like a `if this then ..., otherwise ...` you need to use t
 continueIfEqual("argument1", "argument2")
 breakIfEqual("argument1", "argument2")
 ```
-##### Returns
-- `true` if both arguments are the same
+##### Parameters
+- `argument1` - the value that should be equal to `argument2`
+- `argument2` - the value that should be equal to `argument1`
 
 #### IfStartsWith
 ##### Usage
@@ -134,9 +188,6 @@ breakIfStartsWith("toCheck", "startsWith")
 - `toCheck` - the value you want to check
 - `startsWith` - the value `toCheck` has to start with
 
-##### Returns
-- `true` if `toCheck` starts with `startsWith`
-
 #### IfEndsWith
 ##### Usage
 ```
@@ -147,9 +198,6 @@ breakIfEndsWith("toCheck", "endsWith")
 - `toCheck` - the value you want to check
 - `endsWith` - the value `toCheck` has to end with
 
-##### Returns
-- `true` if `toCheck` ends with `endsWith`
-
 #### IfContains
 ##### Usage
 ```
@@ -159,9 +207,6 @@ breakIfContains("toCheck", "contains")
 ##### Parameters
 - `toCheck` - the value you want to check
 - `contains` - the value `toCheck` has to contain
-
-##### Returns
-- `true` if `toCheck` contains `contains`
 
 ## Event specific
 
@@ -183,9 +228,6 @@ breakIfMentioned("messageId", "roleId")
 - `userId` - the id of the user you want to check for
 - `roleId` - the id of the role you want to check for (to check for `@everyone` use `everyone`, for `@here` use `here` as parameter)
 
-##### Returns
-- `true` if the message mentions the role/user/channel AND the user has the permission to mention it
-
 ##### Supported events
 - onMessage
 
@@ -198,9 +240,6 @@ breakIfUserHasRole("userId", "roleId")
 ##### Parameters
 - `userId` - the user you want to check
 - `roleId` - the role you want to check the user for
-
-##### Returns
-- `true` if the user has the role
 
 # Variables
 
@@ -223,6 +262,24 @@ breakIfUserHasRole("userId", "roleId")
 | `%messageurl%` | The direct URL to the message | onMessage |
 | `%content%` | The content of the message | onMessage |
 | `%formattedcontent%` | The content of the message with human-readable mentions | onMessage |
+
+## Creating your own variables
+
+You can define your own variables. All [functions](#functions) that have a `Returns` title return the value explained there. To save this value in a variable, use `variable = function("argument")`. To access that variable afterwards, use `%variable%`.
+
+### Example
+```
+messageId = sendMessage("1234567890", "This is some message")
+sendMessage("1234567890", "I just sent a message with the id %messageId%")
+
+c=createTextChannel("channelname")
+sendMessage("%c%", "I just created this channel")
+
+vc = createVoiceChannel("some voice channel")
+joinVoiceChannel("%vc%")
+clearQueue()
+playSong("despacito")
+```
 
 # JSON Messages
 If you want to use embeds in messages you need to use the bot's syntax for them. Because every command can only take one line of code, the JSON has to be in a non-readable form.<br>
