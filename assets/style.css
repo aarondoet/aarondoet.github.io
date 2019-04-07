@@ -18,8 +18,3 @@ code.highlighter-rouge {
 h1:hover .title-anchor, h2:hover .title-anchor, h3:hover .title-anchor, h4:hover .title-anchor, h5:hover .title-anchor, h6:hover .title-anchor {
     visibility: visible;
 }
-
-h1, h2, h3, h4, h5, h6 {
-    padding-top: 75px;
-    margin-top: -75px;
-}
