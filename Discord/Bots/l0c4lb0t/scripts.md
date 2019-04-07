@@ -146,6 +146,8 @@ clearReactions("messageId")
 
 #### deleteChannel
 
+#### deleteCategory
+
 #### joinVoiceChannel
 
 #### leaveVoiceChannel
@@ -158,7 +160,7 @@ clearReactions("messageId")
 
 #### pauseSong
 
-#### continueSong
+#### resumeSong
 
 #### skipSong
 
@@ -241,6 +243,8 @@ breakIfUserHasRole("userId", "roleId")
 - `userId` - the user you want to check
 - `roleId` - the role you want to check the user for
 
+#### IfUserIsInVoiceChannel
+
 # Variables
 
 | Variable | Description | Functions supporting the variable |
@@ -279,6 +283,9 @@ vc = createVoiceChannel("some voice channel")
 joinVoiceChannel("%vc%")
 clearQueue()
 playSong("despacito")
+
+role = createRole("rolename")
+giveRole("1234567890", "%role%")
 ```
 
 # JSON Messages
