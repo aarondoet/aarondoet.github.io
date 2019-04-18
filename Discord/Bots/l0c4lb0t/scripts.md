@@ -49,6 +49,14 @@ sendMessage("channelId", "message")
 ##### Returns
 - the id of the message that was sent
 
+#### editMessage
+##### Usage
+```
+editMessage("messageId", "message")
+```
+- `messageId` - the id of the message you want to edit
+- `message` - the message (plain text) or a [JSON representation of the message](#json-messages) (embed)
+
 #### deleteMessage
 ##### Usage
 ```
@@ -210,25 +218,35 @@ breakIfContains("toCheck", "contains")
 - `toCheck` - the value you want to check
 - `contains` - the value `toCheck` has to contain
 
+#### IfMatches
+##### Usage
+```
+continueIfMatches("toCheck", "regex")
+breakIfMatches("toCheck", "regex")
+```
+##### Parameters
+- `toCheck` - the value you want to check
+- `regex` - the regular expression `toCheck` should match with
+
 ## Event specific
 
 ### Logic
 
-#### IfMentioned
+#### IfMentions
 ##### Usage
 ```
-continueIfMentioned("messageId", "channelId")
-breakIfMentioned("messageId", "channelId")
-continueIfMentioned("messageId", "userId")
-breakIfMentioned("messageId", "userId")
-continueIfMentioned("messageId", "roleId")
-breakIfMentioned("messageId", "roleId")
+continueIfMentions("messageId", "channelId")        CURRENTLY NOT AVAILABLE
+breakIfMentions("messageId", "channelId")           CURRENTLY NOT AVAILABLE
+continueIfMentions("messageId", "userId")
+breakIfMentions("messageId", "userId")
+continueIfMentions("messageId", "roleId")
+breakIfMentions("messageId", "roleId")
 ```
 ##### Parameters
-- `messageId` - the id of the message you want to check
+- `messageId` - the id of the message you want to check (CURRENTLY NOT AVAILABLE)
 - `channelId` - the id of the channel you want to check for
 - `userId` - the id of the user you want to check for
-- `roleId` - the id of the role you want to check for (to check for `@everyone` use `everyone`, for `@here` use `here` as parameter)
+- `roleId` - the id of the role you want to check for (to check for `@everyone` and `@here` use `everyone`, Discord does not differentiate between those two)
 
 ##### Supported events
 - onMessage
@@ -297,7 +315,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 - `content` - the content of the message (plain text, no inside the embed)
 - `title` - the title of the embed
 - `description` - the description of the embed
-- `color` - the color of the embed (as integer!)
+- `color` - the color of the embed (can be `#f0f`, `#ff00ff`, `16711935` or `magenta`)
 - `author` - the author name of the embed
 - `authorIcon` - the author icon URL of the embed
 - `authorUrl` - the author URL of the embed
@@ -321,39 +339,39 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
     "content": "This is the content of the message that is not inside the embed",
     "title": "The title of the embed. it can be up to 256 characters long",
     "description": "This is the embed description. it can be up to 2048 characters long\n\nbe careful: the embed cannot exceed 6000 characters!",
-    "color": 1234567,
+    "color": "1234567",
     "url": "https://example.com/",
     "fields": [
         {
-            "title": "This is field 1",
+            "name": "This is field 1",
             "content": "field one"
         },
         {
-            "title": "field 2",
+            "name": "field 2",
             "content": "not inline"
         },
         {
-            "title": "field 3",
+            "name": "field 3",
             "content": "still not inline",
             "inline": false
         },
         {
-            "title": "field 4",
+            "name": "field 4",
             "content": "this is inline",
             "inline": true
         },
         {
-            "title": "field 5",
+            "name": "field 5",
             "content": "also inline",
             "inline": true
         },
         {
-            "title": "field 6",
+            "name": "field 6",
             "content": "you can have up to 25 fields in an embed",
             "inline": true
         },
         {
-            "title": "field titles can be up to 256 characters long",
+            "name": "field names can be up to 256 characters long",
             "content": "field content can be up to 1024 characters long"
         }
     ],
@@ -364,7 +382,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 
 #### One-line form to use it in the bot
 ```json
-{"content":"This is the content of the message that is not inside the embed","title":"The title of the embed. it can be up to 256 characters long","description":"This is the embed description. it can be up to 2048 characters long\n\nbe careful: the embed cannot exceed 6000 characters!","color":1234567,"url":"https://example.com/","fields":[{"title":"This is field 1","content":"field one"},{"title":"field 2","content":"not inline"},{"title":"field 3","content":"still not inline","inline":false},{"title":"field 4","content":"this is inline","inline":true},{"title":"field 5","content":"also inline","inline":true},{"title":"field 6","content":"you can have up to 25 fields in an embed","inline":true},{"title":"field titles can be up to 256 characters long","content":"field content can be up to 1024 characters long"}],"footer":"the footer text, up to 2048 characters long","author":"the auuthor's name, up to 256 characters long"}
+{"content":"This is the content of the message that is not inside the embed","title":"The title of the embed. it can be up to 256 characters long","description":"This is the embed description. it can be up to 2048 characters long\n\nbe careful: the embed cannot exceed 6000 characters!","color":"1234567","url":"https://example.com/","fields":[{"name":"This is field 1","content":"field one"},{"name":"field 2","content":"not inline"},{"name":"field 3","content":"still not inline","inline":false},{"name":"field 4","content":"this is inline","inline":true},{"name":"field 5","content":"also inline","inline":true},{"name":"field 6","content":"you can have up to 25 fields in an embed","inline":true},{"name":"field names can be up to 256 characters long","content":"field content can be up to 1024 characters long"}],"footer":"the footer text, up to 2048 characters long","author":"the auuthor's name, up to 256 characters long"}
 ```
 #### Preview
 ![Preview of the message](./assets/jsonmessageexample.jpg "How this message will look like")
