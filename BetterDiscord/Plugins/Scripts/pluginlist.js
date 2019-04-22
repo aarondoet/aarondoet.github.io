@@ -5,7 +5,7 @@ new MutationObserver(function(mut){
 		let plugin = pluginList[i];
 		var pluginAuthor = plugin.querySelector(".bda-author");
 		var pluginDescription = plugin.querySelector(".bda-description");
-		if (plugin.hasClass("settings-closed") && pluginAuthor != null && pluginDescription != null) {
+		if (pluginAuthor != null && pluginDescription != null) {
 			if (!pluginAuthor.firstElementChild && !pluginDescription.firstElementChild && (pluginAuthor.innerText == 'l0c4lh057')) {
 				var currentUser = BdApi.findModuleByProps(["getCurrentUser"]).getCurrentUser();
 				pluginDescription.style.setProperty('display', 'block', 'important');
