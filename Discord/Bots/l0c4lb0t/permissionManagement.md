@@ -21,15 +21,15 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 ## Change permissions
 * List permissions for a specific action: `=permissions list <action>`
 
-* Add user to the whitelist: `=permission add <action> user whitelist <@user>`
-* Add user to the blacklist: `=permission add <action> user blacklist <@user>`
-* Add role to the whitelist: `=permission add <action> user whitelist <@role>`
-* Add role to the blacklist: `=permission add <action> user blacklist <@role>`
+* Add user to the whitelist: `=permission add <action> whitelist <@user>`
+* Add user to the blacklist: `=permission add <action> blacklist <@user>`
+* Add role to the whitelist: `=permission add <action> whitelist <@role>`
+* Add role to the blacklist: `=permission add <action> blacklist <@role>`
 
-* Remove user to the whitelist: `=permission remove <action> user whitelist <@user>`
-* Remove user to the blacklist: `=permission remove <action> user blacklist <@user>`
-* Remove role to the whitelist: `=permission remove <action> user whitelist <@role>`
-* Remove role to the blacklist: `=permission remove <action> user blacklist <@role>`
+* Remove user to the whitelist: `=permission remove <action> whitelist <@user>`
+* Remove user to the blacklist: `=permission remove <action> blacklist <@user>`
+* Remove role to the whitelist: `=permission remove <action> whitelist <@role>`
+* Remove role to the blacklist: `=permission remove <action> blacklist <@role>`
 
 Adding a user or role to on whitelist or blacklist will automatically remove it from the other list.
 

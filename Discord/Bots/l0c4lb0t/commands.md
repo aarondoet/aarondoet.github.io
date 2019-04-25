@@ -24,14 +24,14 @@ Permissions: `language` default: `Administrator`
 
 ### permissions
 `=permissions list <action>` shows the whitelisted/blacklisted users/roles for the specific action or command<br>
-`=permissions add <action> user whitelist <@user>` whitelists a user to perform an action<br>
-`=permissions add <action> user blacklist <@user>` blacklists a user from permorming an action<br>
-`=permissions add <action> role whitelist <@role>` whitelists a role to perform an action<br>
-`=permissions add <action> role blacklist <@role>` blacklists a role from performing an action<br>
-`=permissions remove <action> user whitelist <@user>` removes a user from the whitelist of an action<br>
-`=permissions remove <action> user blacklist <@user>` removes a user from the blacklist of an action<br>
-`=permissions remove <action> role whitelist <@role>` removes a role from the whitelist of an action<br>
-`=permissions remove <action> role blacklist <@role>` removes a role from the blacklist of an action<br>
+`=permissions add <action> whitelist <@user>` whitelists a user to perform an action<br>
+`=permissions add <action> blacklist <@user>` blacklists a user from permorming an action<br>
+`=permissions add <action> whitelist <@role>` whitelists a role to perform an action<br>
+`=permissions add <action> blacklist <@role>` blacklists a role from performing an action<br>
+`=permissions remove <action> whitelist <@user>` removes a user from the whitelist of an action<br>
+`=permissions remove <action> blacklist <@user>` removes a user from the blacklist of an action<br>
+`=permissions remove <action> whitelist <@role>` removes a role from the whitelist of an action<br>
+`=permissions remove <action> blacklist <@role>` removes a role from the blacklist of an action<br>
 Permissions: `changePermissions` default: `Administrator`<br>
 For more information about permissions, check out [the explanation](./permissionManagement.html)
 

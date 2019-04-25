@@ -288,6 +288,7 @@ breakIfUserHasRole("userId", "roleId")
 ## Creating your own variables
 
 You can define your own variables. All [functions](#functions) that have a `Returns` title return the value explained there. To save this value in a variable, use `variable = function("argument")`. To access that variable afterwards, use `%variable%`.
+You CAN'T use functions that have a return value inside of other functions. Scripts like `sendMessage("1234567890", "%sendMessage("1234567890", "something")%")` will not work!
 
 ### Example
 ```
