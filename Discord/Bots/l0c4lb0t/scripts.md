@@ -207,6 +207,36 @@ This method does not only return a boolean, it also sets variables automatically
 
 #### hasAttachment
 
+#### levenshteinDistance
+##### Usage
+```
+levenshteinDistance("argument1", "argument2")
+```
+##### Parameters
+- `argument1`, `argument2` - the two string you want to compare
+##### Returns
+- the [levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) of the two strings
+
+#### upperCase
+##### Usage
+```
+upperCase("text")
+```
+##### Parameters
+- `text` - the text you want to get in upper case
+##### Returns
+- the text in upper case
+
+#### lowerCase
+##### Usage
+```
+lowerCase("text")
+```
+##### Parameters
+- `text` - the text you want to get in lower case
+##### Returns
+- the text in lower case
+
 #### escapeRegex
 ##### Usage
 ```
