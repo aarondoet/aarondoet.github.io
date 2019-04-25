@@ -18,3 +18,10 @@ code.highlighter-rouge {
 h1:hover .title-anchor, h2:hover .title-anchor, h3:hover .title-anchor, h4:hover .title-anchor, h5:hover .title-anchor, h6:hover .title-anchor {
     visibility: visible;
 }
+
+html div.wrapper {
+    max-width: 60%;
+}
+html section {
+    max-width: 100%;
+}
