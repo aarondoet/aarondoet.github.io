@@ -156,9 +156,13 @@ clearReactions("messageId")
 
 #### deleteCategory
 
+#### moveChannel
+
 #### joinVoiceChannel
 
 #### leaveVoiceChannel
+
+#### moveUser
 
 #### clearQueue
 
@@ -171,6 +175,83 @@ clearReactions("messageId")
 #### resumeSong
 
 #### skipSong
+
+#### match
+##### Usage
+```
+match("toMatch", "regExp")
+```
+##### Parameters
+- `toMatch` - the string you want to match
+- `regExp` - the regular expression you want to match with
+##### Returns
+- wether the string matches the regular expression
+
+This method does not only return a boolean, it also sets variables automatically. All captured groups get saved in the variable `groupX` where `X` is the number of the group. To access the third group you use `%group3%`. `group0` is the whole match. If a group has no value, the value gets set to an empty string.
+
+### Return only
+
+#### equals
+
+#### equalsIgnoreCase
+
+#### startsWith
+
+#### endsWith
+
+#### contains
+
+#### matches
+
+#### mentions
+
+#### hasAttachment
+
+#### escapeRegex
+##### Usage
+```
+escapeRegex("regExp")
+```
+##### Parameters
+- `regExp` - the string you want to escape all regex
+##### Returns
+- the escaped string
+
+#### replace
+##### Usage
+```
+replace("text", "toReplace", "replaceWith")
+```
+##### Parameters
+- `text` - the text you want to replace the text in
+- `toReplace` - the text you want to get replaced
+- `replaceWith` - the text you want to have instead
+##### Returns
+- the string with the text replaced
+
+#### replaceFirst
+##### Usage
+```
+replaceFirst("text", "regExp", "replaceWith")
+```
+##### Parameters
+- `text` - the text you want to replace the text in
+- `regExp` - the regular expression you want to get replaced
+- `replaceWith` - the text you want to have instead
+##### Returns
+- the string with the first occurence of the regular expression replaced
+
+#### replaceRegex
+##### Usage
+```
+replaceRegex("text", "regExp", "replaceWith")
+```
+##### Parameters
+- `text` - the text you want to replace the text in
+- `regExp` - the regular expression you want to get replaced
+- `replaceWith` - the text you want to have instead
+##### Returns
+- the string with all occurences of the regular expression replaced
 
 ### Logic
 
