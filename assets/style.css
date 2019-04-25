@@ -19,8 +19,15 @@ h1:hover .title-anchor, h2:hover .title-anchor, h3:hover .title-anchor, h4:hover
     visibility: visible;
 }
 
-html div.wrapper {
-    max-width: 60%;
+@media screen and (min-width: 1500px){
+    html div.wrapper {
+        max-width: 60%;
+    }
+}
+@media screen and (max-width: 1499px){
+    html div.wrapper {
+        max-width: 90%;
+    }
 }
 html section {
     max-width: 100%;
