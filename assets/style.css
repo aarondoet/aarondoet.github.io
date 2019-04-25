@@ -24,7 +24,12 @@ h1:hover .title-anchor, h2:hover .title-anchor, h3:hover .title-anchor, h4:hover
         max-width: 60%;
     }
 }
-@media screen and (max-width: 1499px){
+@media screen and (max-width: 1499px) and (min-width: 1100px){
+    html div.wrappe {
+        max-width: 75%;
+    }
+}
+@media screen and (max-width: 1099px){
     html div.wrapper {
         max-width: 90%;
     }
