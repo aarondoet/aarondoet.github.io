@@ -191,6 +191,8 @@ This method does not only return a boolean, it also sets variables automatically
 
 ### Return only
 
+These are functionc that do nothing by their own. They only return a value you have to save, otherwise they are useless. If you don't know how to save the returned values, read [this part](#creating-your-own-variables)
+
 #### equals
 
 #### equalsIgnoreCase
@@ -206,6 +208,28 @@ This method does not only return a boolean, it also sets variables automatically
 #### mentions
 
 #### hasAttachment
+
+#### greaterThan
+##### Usage
+```
+greaterThan("number1", "number2")
+```
+##### Parameters
+- `number1` - the number that should be greater than `number2`
+- `number2` - the number that should be less than `number1`
+##### Returns
+- wether `number1` is greater than `number2`
+
+#### lessThan
+##### Usage
+```
+lessThan("number1", "number2")
+```
+##### Parameters
+- `number1` - the number that should be less than `number2`
+- `number2` - the number that should be greater than `number1`
+##### Returns
+- wether `number1` is less than `number2`
 
 #### levenshteinDistance
 ##### Usage
@@ -236,6 +260,26 @@ lowerCase("text")
 - `text` - the text you want to get in lower case
 ##### Returns
 - the text in lower case
+
+#### length
+##### Usage
+```
+length("text")
+```
+##### Parameters
+- `text` - the text you want to know the length of
+##### Returns
+- the length of the string
+
+#### calc
+##### Usage
+```
+calc("term")
+```
+##### Parameters
+- `term` - the term you want to calculate
+##### Returns
+- the result of the term
 
 #### escapeRegex
 ##### Usage
