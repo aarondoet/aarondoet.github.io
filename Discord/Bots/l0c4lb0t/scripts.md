@@ -2,11 +2,11 @@
 layout: default
 published: true
 title: Scripts
-description: Functions that you can use in bot scripts
+description: Everything you can use in bot scripts
 ---
 # How to use
-Every command has to be in his own line. They cannot use more than one line. To use line breaks in arguments, please use `\n` instead of the line break.
-
+Every command has to be in his own line. They cannot use more than one line. To use line breaks in arguments, please use `\n` instead of the line break.<br>
+For everything that could be specific to a programming language (like RegEx): The bot runs in Java, that means you have to use Java syntax for everything you do.
 
 # Events
 
@@ -185,7 +185,7 @@ match("toMatch", "regExp")
 - `toMatch` - the string you want to match
 - `regExp` - the regular expression you want to match with
 ##### Returns
-- wether the string matches the regular expression
+- whether the string matches the regular expression
 
 This method does not only return a boolean, it also sets variables automatically. All captured groups get saved in the variable `groupX` where `X` is the number of the group. To access the third group you use `%group3%`. `group0` is the whole match. If a group has no value, the value gets set to an empty string.
 
@@ -218,7 +218,7 @@ greaterThan("number1", "number2")
 - `number1` - the number that should be greater than `number2`
 - `number2` - the number that should be less than `number1`
 ##### Returns
-- wether `number1` is greater than `number2`
+- whether `number1` is greater than `number2`
 
 #### lessThan
 ##### Usage
@@ -229,7 +229,7 @@ lessThan("number1", "number2")
 - `number1` - the number that should be less than `number2`
 - `number2` - the number that should be greater than `number1`
 ##### Returns
-- wether `number1` is less than `number2`
+- whether `number1` is less than `number2`
 
 #### levenshteinDistance
 ##### Usage
@@ -328,6 +328,80 @@ replaceRegex("text", "regExp", "replaceWith")
 - the string with all occurences of the regular expression replaced
 
 ### Logic
+
+There are some return-only [logic gate](https://en.wikipedia.org/wiki/Logic_gate) functions which allow you to add some more complex logic to your scripts. All arguments are booleans. If they exactly equal `true` (case insensitive) to be interpreted as true, otherwise they will be interpreted as false.
+
+#### not
+##### Usage
+```
+not("value")
+```
+##### Parameters
+- `value` - the boolean that should be inverted
+##### Returns
+- the inversion of `value`
+
+#### and
+##### Usage
+```
+and("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans that should both be true
+##### Returns
+- whether both values are true
+
+#### nand
+##### Usage
+```
+nand("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans that should both be true
+##### Returns
+- whether not both values are true
+
+#### or
+##### Usage
+```
+or("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans one should be true of
+##### Returns
+- whether at least one of the values is true
+
+#### nor
+##### Usage
+```
+nor("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans that should both be false
+##### Returns
+- whether both values are false
+
+#### xor
+##### Usage
+```
+xor("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans one should be true of
+##### Returns
+- whether exactly one of the booleans is true
+
+#### xnor
+##### Usage
+```
+xnor("value1", "value2")
+```
+##### Parameters
+- `value1`, `value2` - the booleans both should be equal
+##### Returns
+- wether both values are the same
+
+### Continue/Stop script execution
 
 There are some functions that stop script execution and give you the possibility to only do something if a condition is true.<br>
 They are called `continueIf<...>` and `breakIf<...>`. The `continueIf` function will continue script execution if the condition is true and stop it if the condition is false. `breakIf` on the other hand does the exact opposite of that. If the condition is true it will stop script execution and if the condition is false it continues.<br>
@@ -486,7 +560,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 ### Keys
 - `title` - the title of the field
 - `content` - the content of the field
-- `inline` - wether the field should be inline or not (`false` if not set)
+- `inline` - whether the field should be inline or not (`false` if not set)
 
 ## Example
 #### Human-readable form
