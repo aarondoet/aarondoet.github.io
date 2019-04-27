@@ -209,6 +209,18 @@ These are functionc that do nothing by their own. They only return a value you h
 
 #### hasAttachment
 
+#### isInVoiceChannel
+##### Usage
+```
+isInVoiceChannel("userId")
+isInVoiceChannel("userId", "voiceChannelId")
+```
+##### Parameters
+- `userId` - the id of the user you want to check
+- `voiceChannelId` - the id of the voice channel the user should be in (not present -> channel does not matter)
+##### Returns
+- whether the user is in a voice channel (if no channel specified) or if the user is in the given voice channel
+
 #### greaterThan
 ##### Usage
 ```
@@ -231,16 +243,6 @@ lessThan("number1", "number2")
 ##### Returns
 - whether `number1` is less than `number2`
 
-#### levenshteinDistance
-##### Usage
-```
-levenshteinDistance("argument1", "argument2")
-```
-##### Parameters
-- `argument1`, `argument2` - the two string you want to compare
-##### Returns
-- the [levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) of the two strings
-
 #### upperCase
 ##### Usage
 ```
@@ -261,25 +263,33 @@ lowerCase("text")
 ##### Returns
 - the text in lower case
 
-#### length
+#### substring
 ##### Usage
 ```
-length("text")
+substring("text", "startIndex")
+substring("text", "startIndex", "endIndex")
 ```
 ##### Parameters
-- `text` - the text you want to know the length of
+- `text` - the text you want to get the substring of
+- `startIndex` - the index of the character you want to start the substring at (how many characters you cut off at the beginning)
+- `endIndex` - the index of the character the substring should stop at
+Negative parameters get read from the end of the text (`substring("some text", "-3", "-1")` -> `ex`, `substring("some text", "2", "-2")` -> `me te`)
 ##### Returns
-- the length of the string
+- the substring
 
-#### calc
+#### substr
 ##### Usage
 ```
-calc("term")
+substr("text", "startIndex")
+substr("text", "startIndex", "length")
 ```
 ##### Parameters
-- `term` - the term you want to calculate
+- `text` - the text you want to get the substring of
+- `startIndex` - the index of the character you want to start the substring at (how many characters you cut off at the beginning)
+- `length` - how long the substring should be
+Negative parameters for `startIndex` get read from the end of the text (`substr("some text", "-7", "5")` -> `me te`)
 ##### Returns
-- the result of the term
+- the substring
 
 #### escapeRegex
 ##### Usage
@@ -327,9 +337,39 @@ replaceRegex("text", "regExp", "replaceWith")
 ##### Returns
 - the string with all occurences of the regular expression replaced
 
+#### length
+##### Usage
+```
+length("text")
+```
+##### Parameters
+- `text` - the text you want to know the length of
+##### Returns
+- the length of the string
+
+#### levenshteinDistance
+##### Usage
+```
+levenshteinDistance("argument1", "argument2")
+```
+##### Parameters
+- `argument1`, `argument2` - the two string you want to compare
+##### Returns
+- the [levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) of the two strings
+
+#### calc
+##### Usage
+```
+calc("term")
+```
+##### Parameters
+- `term` - the term you want to calculate
+##### Returns
+- the result of the term
+
 ### Logic
 
-There are some return-only [logic gate](https://en.wikipedia.org/wiki/Logic_gate) functions which allow you to add some more complex logic to your scripts. All arguments are booleans. If they exactly equal `true` (case insensitive) to be interpreted as true, otherwise they will be interpreted as false.
+There are some return-only [logic gate](https://en.wikipedia.org/wiki/Logic_gate) functions which allow you to add some more complex logic to your scripts. All arguments are booleans. If they exactly equal `true` (case insensitive) they will be interpreted as true, otherwise they will be interpreted as false.
 
 #### not
 ##### Usage
@@ -457,10 +497,6 @@ breakIfMatches("toCheck", "regex")
 - `toCheck` - the value you want to check
 - `regex` - the regular expression `toCheck` should match with
 
-## Event specific
-
-### Logic
-
 #### IfMentions
 ##### Usage
 ```
@@ -472,13 +508,10 @@ continueIfMentions("messageId", "roleId")
 breakIfMentions("messageId", "roleId")
 ```
 ##### Parameters
-- `messageId` - the id of the message you want to check (CURRENTLY NOT AVAILABLE)
-- `channelId` - the id of the channel you want to check for
+- `messageId` - the id of the message you want to check
+- `channelId` - the id of the channel you want to check for (CURRENTLY NOT AVAILABLE)
 - `userId` - the id of the user you want to check for
 - `roleId` - the id of the role you want to check for (to check for `@everyone` and `@here` use `everyone`, Discord does not differentiate between those two)
-
-##### Supported events
-- onMessage
 
 #### IfUserHasRole
 ##### Usage
@@ -491,6 +524,16 @@ breakIfUserHasRole("userId", "roleId")
 - `roleId` - the role you want to check the user for
 
 #### IfUserIsInVoiceChannel
+##### Usage
+```
+continueIfIsInVoiceChannel("userId")
+breakIfIsInVoiceChannel("userId")
+continueIfIsInVoiceChannel("userId", "voiceChannelId")
+breakIfIsInVoiceChannel("userId", "voiceChannelId")
+```
+##### Parameters
+- `userId` - the id of the user you want to check
+- `voiceChannelId` - the id of the voice channel the user should be in (not present -> channel does not matter)
 
 # Variables
 
