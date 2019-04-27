@@ -273,7 +273,9 @@ substring("text", "startIndex", "endIndex")
 - `text` - the text you want to get the substring of
 - `startIndex` - the index of the character you want to start the substring at (how many characters you cut off at the beginning)
 - `endIndex` - the index of the character the substring should stop at
+
 Negative parameters get read from the end of the text (`substring("some text", "-3", "-1")` -> `ex`, `substring("some text", "2", "-2")` -> `me te`)
+
 ##### Returns
 - the substring
 
@@ -287,7 +289,9 @@ substr("text", "startIndex", "length")
 - `text` - the text you want to get the substring of
 - `startIndex` - the index of the character you want to start the substring at (how many characters you cut off at the beginning)
 - `length` - how long the substring should be
+
 Negative parameters for `startIndex` get read from the end of the text (`substr("some text", "-7", "5")` -> `me te`)
+
 ##### Returns
 - the substring
 
