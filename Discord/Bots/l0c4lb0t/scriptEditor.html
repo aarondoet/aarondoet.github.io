@@ -4,14 +4,14 @@
 <head>
     <script>
         const functions = {
-            "sendMessage": 'sendMessage("CARET", "")',
-            "deleteMessage": 'deleteMessage("CARET")',
-            "kick": 'kick("CARET")',
-            "ban": 'ban("CARET")'
+            "sendMessage": [['sendMessage("CARET", "")'], ['sendMessage(channelId, content)']],
+            "deleteMessage": [['deleteMessage("CARET")'], ['deleteMessage(messageId)']],
+            "kick": [['kick("CARET", "")', 'kick("CARET")'], ['kick(userId, reason)', 'kick(userId)']],
+            "ban": [['ban("CARET", "")', 'ban("CARET")'], ['ban(userId, reason)', 'ban(userId)']]
         };
         const returnOnlyFunctions = {
-            "startsWith": 'startsWith("CARET", "")',
-            "endsWith": 'endsWith("CARET", "")'
+            "startsWith": [['startsWith("CARET", "")'], ['startsWith(text, with)']],
+            "endsWith": [['endsWith("CARET", "")'], ['endsWith(text, with)']]
         };
         var eventBasedVariables = [];
         var completions = {};
@@ -43,8 +43,8 @@
                 if (functionNameSelected) {
                     let funcs = Object.assign(Object.assign({}, functions), rowValueToCaret.includes("=") ? returnOnlyFunctions : {});
                     for (let funcName in funcs) {
-                        if (funcName.startsWith(functionName)) {
-                            completions[funcName] = funcs[funcName].substr(functionName.length);
+                        if (funcName.trim().startsWith(functionName)) {
+                            completions[funcName] = [funcs[funcName][0].map(x => x.substr(functionName.length)), funcs[funcName][1]];
                         }
                     }
                 }
@@ -61,7 +61,7 @@
                     if (complete) {
                         for (let variable of variables) {
                             if (variable.startsWith(currVarName)) {
-                                completions[variable] = `${variable.substr(currVarName.length)}%CARET`;
+                                completions[variable] = [[`${variable.substr(currVarName.length)}%CARET`], [variable]];
                             }
                         }
                     }
@@ -72,12 +72,27 @@
             else completionArea = $(`<div id="completions"></div>`)[0];
             document.body.appendChild(completionArea);
             for (let completion in completions) {
-                let el = $(`<div>${completion}</div>`);
-                el.on("click", () => {
-                    ta.value = ta.value.substr(0, caretPos) + completions[completion].replace("CARET", "") + ta.value.substring(caretPos, ta.value.length);
-                    ta.selectionEnd = caretPos + completions[completion].indexOf("CARET");
-                    ta.focus();
-                });
+                let el = $(`<div function-variation="0"></div>`);
+                el[0].updateFunction = function(cnt){
+                    let funcCount = Object.keys(completions[completion][1]).length;
+                    let newIndex = (cnt + funcCount + getVariation(this)) % funcCount;
+                    el.attr("function-variation", newIndex);
+                    this.innerHTML = "";
+                    let aComplete = $(`<span class="completeSuggestion"></span>`).appendTo(this);
+                    aComplete[0].innerText = completions[completion][1][newIndex];
+                    aComplete.on("click", ()=>{
+                        ta.value = ta.value.substr(0, caretPos) + completions[completion][0][getVariation(el[0])].replace("CARET", "") + ta.value.substring(caretPos, ta.value.length);
+                        ta.selectionEnd = caretPos + completions[completion][0][getVariation(el[0])].indexOf("CARET");
+                        ta.focus();
+                    });
+                    if(funcCount > 1){
+                        let aRight = $(`<span class="completeRight">&gt;</span>`).appendTo(this);
+                        let aLeft = $(`<span class="completeLeft">&lt;</span>`).appendTo(this);
+                        aLeft.on("click", ()=>{this.updateFunction(-1)});
+                        aRight.on("click", ()=>{this.updateFunction(1)});
+                    }
+                };
+                el[0].updateFunction(0);
                 el.on("mousedown", () => {
                     removeCompletions = new Date().getTime();
                 });
@@ -87,6 +102,10 @@
             updateCompletionsPos(ta, caretPos, completionArea);
         }
         var removeCompletions = new Date().getTime();
+
+        getVariation = (el) => {
+            return parseInt($(el).attr("function-variation"));
+        }
 
         updateCompletionsPos = (ta, caretPos, completionArea) => {
             if (!completionArea) return;
@@ -132,7 +151,9 @@
         init = () => {
             $(document).ready(() => {
                 $("#scriptarea").on("keyup click focus", function (e) {
-                    if (e.type == "keyup" && (e.which == 38 || e.which == 40)) return;
+                    if (e.type == "keyup" && document.getElementById("completions") && (e.which == 38 || e.which == 40)) return;
+                    if(e.type == "keyup" && document.getElementsByClassName("selected").length > 0 && (e.which == 37 || e.which == 39)) return;
+                    if(e.type == "keyup" && e.which == 27) return;
                     updateCompletions(this);
                 });
                 $("#scriptarea").on("scroll resize", function (e) {
@@ -167,12 +188,25 @@
                             updateSelectedCompletion(0);
                             $(".selected").click();
                             e.preventDefault();
+                        }else if(e.which == 9){
+                            updateSelectedCompletion(0);
+                            $(".selected").click();
+                            e.preventDefault();
                         } else if (e.which == 40) {
                             updateSelectedCompletion(1);
                             e.preventDefault();
                         } else if (e.which == 38) {
                             updateSelectedCompletion(-1);
                             e.preventDefault();
+                        } else if(e.which == 37 && document.getElementsByClassName("selected").length > 0) {
+                            document.getElementsByClassName("selected")[0].updateFunction(-1);
+                            e.preventDefault();
+                        } else if(e.which == 39 && document.getElementsByClassName("selected").length > 0){
+                            document.getElementsByClassName("selected")[0].updateFunction(1);
+                            e.preventDefault();
+                        }else if(e.which == 27){
+                            let ca = document.getElementById("completions");
+                            if(ca) ca.outerHTML = "";
                         }
                     }
                 });
@@ -396,6 +430,7 @@
     <style>
         html {
             scroll-behavior: smooth;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         #scriptarea {
@@ -416,6 +451,15 @@
         .selected {
             color: red;
         }
+
+        .completeSuggestion {
+            margin-right: 30px;
+            cursor: default;
+        }
+        .completeRight, .completeLeft {
+            float: right;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -425,7 +469,7 @@
         Here is a short summary:
         <ul>
             <li><code>functionName("argument1", "argument2")</code> calls a function. The number of arguments can be different for each function.</li>
-            <li><code>variable=someFunction()</code> saves the return value of the function in the variable <code>variable</code>. To access it again use <code>%variable%</code>.</li>
+            <li><code>variable=someFunction()</code> saves the return value of the function in <code>variable</code>. To access it again use <code>%variable%</code>.</li>
             <li>There are variables that you can use for each event. They don't have to be defined.</li>
         </ul>
     </p>
