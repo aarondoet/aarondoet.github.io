@@ -361,15 +361,16 @@
                 updateVariables();
             })
         }
+        let defaultVars = ["guildid", "guildname", "guildicon", "botid"];
         let userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
         let messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
         let textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
         let voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
         let categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
         let evBaVar = {
-            "onMessage": [].concat(userVars).concat(textChannelVars).concat(messageVars),
-            "onJoin": [].concat(userVars),
-            "onLeave": [].concat(userVars)
+            "onMessage": [].concat(defaultVars).concat(userVars).concat(textChannelVars).concat(messageVars),
+            "onJoin": [].concat(defaultVars).concat(userVars),
+            "onLeave": [].concat(defaultVars).concat(userVars)
         };
 
         download = (filename, content) => {
@@ -419,6 +420,15 @@
 </head>
 
 <body>
+    <p>
+        To learn how scripts work, read <a href="./scripts.html">the docs</a> about it.<br>
+        Here is a short summary:
+        <ul>
+            <li><code>functionName("argument1", "argument2")</code> calls a function. The number of arguments can be different for each function.</li>
+            <li><code>variable=someFunction()</code> saves the return value of the function in the variable <code>variable</code>. To access it again use <code>%variable%</code>.</li>
+            <li>There are variables that you can use for each event. They don't have to be defined.</li>
+        </ul>
+    </p>
     Script name: <input id="scriptname"><br>
     Event type: <select id="eventtype"></select><br>
     <textarea id="scriptarea"></textarea><br>
