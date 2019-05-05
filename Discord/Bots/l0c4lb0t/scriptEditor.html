@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            const functions = {
+                "sendMessage": 'sendMessage("CARET", "")',
+                "deleteMessage": 'deleteMessage("CARET")',
+                "kick": 'kick("CARET")',
+                "ban": 'ban("CARET")'
+            };
+            const returnOnlyFunction = {
+                "startsWith": 'startsWith("CARET", "")',
+                "endsWith": 'endsWith("CARET", "")'
+            };
+            var eventBasedVariables = ["userid", "username", "discriminator", "channelid", "channelname", "channeltopic"];
+            var completions = {};
+            init = ()=>{
+                $(document).ready(()=>{
+                    $("#scriptarea").on("keyup click focus", function(e){
+                        completions = {};
+                        let caretPos = $(this).prop("selectionStart");
+                        let rowsBefore = this.value.substr(0, caretPos).split("\n");
+                        rowsBefore.pop();
+                        let rowNumber = rowsBefore.length;
+                        let rowValue = this.value.split("\n")[rowNumber];
+                        let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
+                        let variables = [].concat(eventBasedVariables);
+                        for(let row of rowsBefore){
+                            let varName = row.match(/^ *[a-zA-Z]+ *(?=\=)/);
+                            if(!varName) continue;
+                            variables.push(varName[0].trim());
+                        }
+                        let rowValueToCaret = rowValue.substr(0, col);
+                        if(!rowValueToCaret.includes("(")){
+                            // outside the function
+                            let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length);
+                            let functionNameSelected = col > rowValue.indexOf("=");
+                            if(functionNameSelected){
+                                for(let funcName in functions){
+                                    if(funcName.startsWith(functionName)){
+                                        completions[funcName] = functions[funcName].substr(functionName.length);
+                                    }
+                                }
+                            }
+                        }else{
+                            // inside the function
+                            let currVarName = rowValueToCaret.match(/(?<=%)[a-zA-Z]*$/);
+                            if(currVarName){
+                                currVarName = currVarName[0];
+                                let valueBefore = rowValueToCaret.substr(0, rowValueToCaret.length - currVarName.length);
+                                let complete = true;
+                                for(let variable of variables){
+                                    if(valueBefore.endsWith(`%${variable}%`)) complete = false;
+                                }
+                                if(complete){
+                                    for(let variable of variables){
+                                        if(variable.startsWith(currVarName)){
+                                            completions[variable] = `${variable.substr(currVarName.length)}%CARET`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        let completionArea = document.getElementById("completions");
+                        completionArea.innerHTML = "";
+                        let i = -1;
+                        for(let completion in completions){
+                            i++;
+                            let el = $(`<div>${completion}</div>`);
+                            el.on("click", ()=>{
+                                this.value = this.value.substr(0, caretPos) + completions[completion].replace("CARET", "") + this.value.substring(caretPos, this.value.length);
+                                this.selectionEnd = caretPos + completions[completion].indexOf("CARET");
+                                this.focus();
+                            });
+                            el.appendTo(completionArea);
+                        }
+                    });
+
+
+                    let updateVariables = ()=>{
+                        eventBasedVariables = evBaVar[document.getElementById("eventtype").value];
+                    }
+
+                    $("#eventtype").on("change", function(e){updateVariables();});
+                    updateVariables();
+                })
+            }
+            let userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
+            let messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
+            let textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
+            let voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
+            let categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
+            let evBaVar = {
+                "onMessage": [].concat(userVars).concat(textChannelVars).concat(messageVars),
+                "onJoin": [].concat(userVars),
+                "onLeave": [].concat(userVars)
+            };
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous" onload="init();"></script>
+    </head>
+    <body>
+        <input id="scriptname">
+        <select id="eventtype">
+            <option value="onMessage">onMessage</option>
+            <option value="onJoin">onJoin</option>
+            <option value="onLeave">onLeave</option>
+        </select>
+        <textarea id="scriptarea"></textarea>
+        <div id="completions"></div>
+    </body>
+</html>

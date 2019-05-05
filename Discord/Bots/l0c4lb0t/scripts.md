@@ -209,6 +209,8 @@ These are functionc that do nothing by their own. They only return a value you h
 
 #### hasAttachment
 
+#### hasEmbed
+
 #### isInVoiceChannel
 ##### Usage
 ```
@@ -517,7 +519,25 @@ breakIfMentions("messageId", "roleId")
 - `userId` - the id of the user you want to check for
 - `roleId` - the id of the role you want to check for (to check for `@everyone` and `@here` use `everyone`, Discord does not differentiate between those two)
 
-#### IfUserHasRole
+#### IfHasAttachment
+##### Usage
+```
+continueIfHasAttachment("messageId")
+breakIfHasAttachment("messageId")
+```
+##### Parameters
+- `messageId` - the id of the message you want to check for an attachment
+
+#### IfHasEmbed
+##### Usage
+```
+continueIfHasEmbed("messageId")
+breakIfHasEmbed("messageId")
+```
+##### Parameters
+- `messageId` - the id of the message you want to check for an embed
+
+#### IfHasRole
 ##### Usage
 ```
 continueIfUserHasRole("userId", "roleId")
@@ -527,7 +547,7 @@ breakIfUserHasRole("userId", "roleId")
 - `userId` - the user you want to check
 - `roleId` - the role you want to check the user for
 
-#### IfUserIsInVoiceChannel
+#### IfIsInVoiceChannel
 ##### Usage
 ```
 continueIfIsInVoiceChannel("userId")
@@ -541,25 +561,89 @@ breakIfIsInVoiceChannel("userId", "voiceChannelId")
 
 # Variables
 
-| Variable | Description | Functions supporting the variable |
+## General
+
+Variables that you can use in every event
+
+| Variable | Description |
 | - | - | - |
-| `%guildid%` | The id of the guild | all |
-| `%guildname%` | The name of the guild | all |
-| `%guildicon%` | The icon of the guild | all |
-| `%userid%` | The id of the user triggering the event | onMessage |
-| `%username%` | The name of the user | onMessage |
-| `%usernick%` | The nickname of the user (or username if not nicked) | onMessage |
-| `%userpfp%` | The profile picture of the user | onMessage |
-| `%userdiscriminator%` | The discriminator of the user | onMessage |
-| `%usermention%` | The mention of the user | onMessage |
-| `%channelid%` | The id of the channel | onMessage |
-| `%channelname%` | The name of the channel | onMessage |
-| `%channeltopic%` | The topic of the channel | onMessage |
-| `%channelmention%` | The mention of the channel | onMessage |
-| `%messageid%` | The id of the message | onMessage |
-| `%messageurl%` | The direct URL to the message | onMessage |
-| `%content%` | The content of the message | onMessage |
-| `%formattedcontent%` | The content of the message with human-readable mentions | onMessage |
+| `%guildid%` | The id of the guild |
+| `%guildname%` | The name of the guild |
+| `%guildicon%` | The icon of the guild |
+
+## User specific
+
+Variables that you can use when a user is involved in the event
+
+| Variable | Description |
+| - | - |
+| `%userid%` | The id of the user triggering the event |
+| `%username%` | The name of the user |
+| `%usernick%` | The nickname of the user (or username if not nicked) |
+| `%userpfp%` | The profile picture of the user |
+| `%discriminator%` | The discriminator of the user |
+| `%usermention%` | The mention of the user |
+
+## Channel specific
+
+Variables that you can use when a channel is involved in the event
+
+### General
+
+| Variable | Description |
+| - | - |
+| `%channelid%` | The id of the channel |
+| `%channelname%` | The name of the channel |
+| `%channelmention%` | The mention of the channel |
+
+### Text Channel
+
+| Variable | Description |
+| - | - |
+| `%channeltopic%` | The topic of the channel |
+| `%nsfw%` | Whether the channel is marked as NSFW or not |
+| `%slowmode%` | The slowmode of the channel in seconds |
+| `%categoryid%` | The id of the category the channel is in (`0` if it is in no category) |
+
+### Voice Channel
+
+| Variable | Description |
+| - | - |
+| `%bitrate%` | The bitrate of the channel |
+| `%userlimit%` | The user limit of the channel, `0` if it has no limit |
+| `%connectedusercount%` | The count of users connected to the channel |
+| `%categoryid%` | The id of the category the channel is in (`0` if it is in no category) |
+
+### Category
+
+| Variable | Description |
+| - | - |
+| `%channelcount%` | The number of channels the category has |
+
+## Message specific
+
+Variables that you can use when a message is involved in the event
+
+| Variable | Description |
+| - | - |
+| `%messageid%` | The id of the message |
+| `%messageurl%` | The direct URL to the message |
+| `%content%` | The content of the message |
+
+## Timestamps
+
+When there is a timestamp variable listed for an event, there are some options you can use to customize the timestamp.<br>
+If you just use `%timestamp%` you get the milliseconds since epoch which is the required format of the timestamp in embeds in [JSON formatted messages](#json-messages).<br>
+But you can also format the time however you want by using `%timestamp_format_timezone%`. If you don't know how to use the format you can look it up [here](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html). The timezone does not have to be present. If you do not specify it, `GMT` is used as timezone. But if you are living somewhere where another timezone is used it is recommended to set it. You can look up what the timezone parameter should look like [here](https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html).<br>
+
+### Examples
+
+| Format | Output |
+| `%timestamp%` | `1556548001031` |
+| `%timestamp_yyyy-MM-dd HH:mm:ss%` | `2019-04-29 14:26:41` |
+| `%timestamp_dd.MM.yy_Europe/Berlin%` | `29.04.19` |
+| `%timestamp_M/d/yyyy hh:mm a_CST%` | `4/29/2019 09:26 AM` |
+| `%timestamp_E, dd MMM HH:mm:ss.SSS_GMT+2%` | `Mon, 29 Apr 2019 16:26:41.031` |
 
 ## Creating your own variables
 

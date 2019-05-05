@@ -34,4 +34,3 @@ Permissions: `language` default: `Administrator`
 `=permissions remove <action> blacklist <@role>` removes a role from the blacklist of an action<br>
 Permissions: `changePermissions` default: `Administrator`<br>
 For more information about permissions, check out [the explanation](./permissionManagement.html)
-

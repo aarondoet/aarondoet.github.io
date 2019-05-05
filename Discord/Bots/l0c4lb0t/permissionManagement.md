@@ -12,11 +12,12 @@ To make sure you can precisely adjust the permissions I gave you the opportunity
 
 ## Rules
 
-* As long as there is no user and no role in the whitelist, the default permissions apply. The user is blocked from the action if he or a role of him is in the blacklist.
+* As long as there is no user and no role in the whitelist, the default permissions apply. The user is blocked from the action if he or one of his roles is in the blacklist.
 * As soon as you add a role or user to the whitelist, the default permissions are not used anymore.
 * The user whitelist/blacklist is more important than the list for roles. When a user has a whitelisted role but he is blacklisted, he can't perform the action.
 * The blacklist has higher priority than the whitelist. If a user has a blacklisted and a whitelisted role, he can't perform the action.
-* Users with the permission *Administrator* have all permissions, regardless of any white- or blacklist.
+* Users with the permission *Administrator* have all permissions by default, but they can still get blacklisted.
+* The server owner always has all permissions
 
 ## Change permissions
 * List permissions for a specific action: `=permissions list <action>`
