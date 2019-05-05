@@ -1,111 +1,427 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script>
-            const functions = {
-                "sendMessage": 'sendMessage("CARET", "")',
-                "deleteMessage": 'deleteMessage("CARET")',
-                "kick": 'kick("CARET")',
-                "ban": 'ban("CARET")'
-            };
-            const returnOnlyFunction = {
-                "startsWith": 'startsWith("CARET", "")',
-                "endsWith": 'endsWith("CARET", "")'
-            };
-            var eventBasedVariables = ["userid", "username", "discriminator", "channelid", "channelname", "channeltopic"];
-            var completions = {};
-            init = ()=>{
-                $(document).ready(()=>{
-                    $("#scriptarea").on("keyup click focus", function(e){
-                        completions = {};
-                        let caretPos = $(this).prop("selectionStart");
-                        let rowsBefore = this.value.substr(0, caretPos).split("\n");
-                        rowsBefore.pop();
-                        let rowNumber = rowsBefore.length;
-                        let rowValue = this.value.split("\n")[rowNumber];
-                        let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
-                        let variables = [].concat(eventBasedVariables);
-                        for(let row of rowsBefore){
-                            let varName = row.match(/^ *[a-zA-Z]+ *(?=\=)/);
-                            if(!varName) continue;
-                            variables.push(varName[0].trim());
+
+<head>
+    <script>
+        const functions = {
+            "sendMessage": 'sendMessage("CARET", "")',
+            "deleteMessage": 'deleteMessage("CARET")',
+            "kick": 'kick("CARET")',
+            "ban": 'ban("CARET")'
+        };
+        const returnOnlyFunction = {
+            "startsWith": 'startsWith("CARET", "")',
+            "endsWith": 'endsWith("CARET", "")'
+        };
+        var eventBasedVariables = [];
+        var completions = {};
+
+        updateCompletions = (ta) => {
+            completions = {};
+            let caretPos = $(ta).prop("selectionStart");
+            if ($(ta).prop("selectionEnd") != caretPos) {
+                let ca = document.getElementById("completions");
+                if (ca) ca.outerHTML = "";
+                return;
+            }
+            let rowsBefore = ta.value.substr(0, caretPos).split("\n");
+            rowsBefore.pop();
+            let rowNumber = rowsBefore.length;
+            let rowValue = ta.value.split("\n")[rowNumber];
+            let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
+            let variables = [].concat(eventBasedVariables);
+            for (let row of rowsBefore) {
+                let varName = row.match(/^ *[a-zA-Z]+ *(?=\=)/);
+                if (!varName) continue;
+                variables.push(varName[0].trim());
+            }
+            let rowValueToCaret = rowValue.substr(0, col);
+            if (!rowValueToCaret.includes("(")) {
+                // outside the function
+                let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length).trim();
+                let functionNameSelected = col > rowValue.indexOf("=");
+                if (functionNameSelected) {
+                    for (let funcName in functions) {
+                        if (funcName.startsWith(functionName)) {
+                            completions[funcName] = functions[funcName].substr(functionName.length);
                         }
-                        let rowValueToCaret = rowValue.substr(0, col);
-                        if(!rowValueToCaret.includes("(")){
-                            // outside the function
-                            let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length);
-                            let functionNameSelected = col > rowValue.indexOf("=");
-                            if(functionNameSelected){
-                                for(let funcName in functions){
-                                    if(funcName.startsWith(functionName)){
-                                        completions[funcName] = functions[funcName].substr(functionName.length);
-                                    }
-                                }
-                            }
-                        }else{
-                            // inside the function
-                            let currVarName = rowValueToCaret.match(/(?<=%)[a-zA-Z]*$/);
-                            if(currVarName){
-                                currVarName = currVarName[0];
-                                let valueBefore = rowValueToCaret.substr(0, rowValueToCaret.length - currVarName.length);
-                                let complete = true;
-                                for(let variable of variables){
-                                    if(valueBefore.endsWith(`%${variable}%`)) complete = false;
-                                }
-                                if(complete){
-                                    for(let variable of variables){
-                                        if(variable.startsWith(currVarName)){
-                                            completions[variable] = `${variable.substr(currVarName.length)}%CARET`;
-                                        }
-                                    }
-                                }
+                    }
+                }
+            } else {
+                // inside the function
+                let currVarName = rowValueToCaret.match(/(?<=%)[a-zA-Z]*$/);
+                if (currVarName) {
+                    currVarName = currVarName[0];
+                    let valueBefore = rowValueToCaret.substr(0, rowValueToCaret.length - currVarName.length);
+                    let complete = true;
+                    for (let variable of variables) {
+                        if (valueBefore.endsWith(`%${variable}%`)) complete = false;
+                    }
+                    if (complete) {
+                        for (let variable of variables) {
+                            if (variable.startsWith(currVarName)) {
+                                completions[variable] = `${variable.substr(currVarName.length)}%CARET`;
                             }
                         }
+                    }
+                }
+            }
+            let completionArea = document.getElementById("completions");
+            if (completionArea) completionArea.innerHTML = "";
+            else completionArea = $(`<div id="completions"></div>`)[0];
+            document.body.appendChild(completionArea);
+            for (let completion in completions) {
+                let el = $(`<div>${completion}</div>`);
+                el.on("click", () => {
+                    ta.value = ta.value.substr(0, caretPos) + completions[completion].replace("CARET", "") + ta.value.substring(caretPos, ta.value.length);
+                    ta.selectionEnd = caretPos + completions[completion].indexOf("CARET");
+                    ta.focus();
+                });
+                el.on("mousedown", () => {
+                    removeCompletions = new Date().getTime();
+                });
+                el.appendTo(completionArea);
+            }
+            if (Object.keys(completions).length == 0) completionArea.outerHTML = "";
+            updateCompletionsPos(ta, caretPos, completionArea);
+        }
+        var removeCompletions = new Date().getTime();
+
+        updateCompletionsPos = (ta, caretPos, completionArea) => {
+            if (!completionArea) return;
+            if (!caretPos) caretPos = $(ta).prop("selectionStart");
+            let carPos = getCaretCoordinates(ta, caretPos);
+            let arePos = ta.getBoundingClientRect();
+            $(completionArea).css({ "left": (carPos.left + arePos.left) + "px", "top": (carPos.top + arePos.top - ta.scrollTop + 20) + "px" });
+        }
+
+        updateSelectedCompletion = (cnt) => {
+            let ca = document.getElementById("completions");
+            if (!ca) return;
+            let sel = ca.getElementsByClassName("selected")[0];
+            if (!sel) {
+                sel = ca.firstElementChild;
+                sel.classList.add("selected");
+                if (cnt > 0) cnt--;
+            }
+            if (cnt < 0) {
+                let newSel = sel;
+                while (cnt < 0) {
+                    cnt++;
+                    newSel = newSel.previousElementSibling;
+                    if (!newSel) newSel = ca.lastElementChild;
+                }
+                sel.classList.remove("selected");
+                newSel.classList.add("selected");
+                sel = newSel;
+            } else if (cnt > 0) {
+                let newSel = sel;
+                while (cnt > 0) {
+                    cnt--;
+                    newSel = newSel.nextElementSibling;
+                    if (!newSel) newSel = ca.firstElementChild;
+                }
+                sel.classList.remove("selected");
+                newSel.classList.add("selected");
+                sel = newSel;
+            }
+            ca.scrollTop = sel.offsetTop - 30;
+        }
+
+        init = () => {
+            $(document).ready(() => {
+                $("#scriptarea").on("keyup click focus", function (e) {
+                    if (e.type == "keyup" && (e.which == 38 || e.which == 40)) return;
+                    updateCompletions(this);
+                });
+                $("#scriptarea").on("scroll resize", function (e) {
+                    updateCompletionsPos(this, null, document.getElementById("completions"));
+                });
+                $("#scriptarea").on("blur", function (e) {
+                    window.setTimeout(() => {
+                        if (new Date().getTime() - removeCompletions < 10) return;
                         let completionArea = document.getElementById("completions");
-                        completionArea.innerHTML = "";
-                        let i = -1;
-                        for(let completion in completions){
-                            i++;
-                            let el = $(`<div>${completion}</div>`);
-                            el.on("click", ()=>{
-                                this.value = this.value.substr(0, caretPos) + completions[completion].replace("CARET", "") + this.value.substring(caretPos, this.value.length);
-                                this.selectionEnd = caretPos + completions[completion].indexOf("CARET");
-                                this.focus();
-                            });
-                            el.appendTo(completionArea);
+                        if (completionArea) completionArea.outerHTML = "";
+                    }, 1);
+                });
+                $("#scriptarea").on("keydown", function (e) {
+                    if (Object.keys(completions).length > 0) {
+                        if (e.which == 13) {
+                            let ta = document.getElementById("scriptarea");
+                            let caretPos = $(ta).prop("selectionStart");
+                            let rowsBefore = ta.value.substr(0, caretPos).split("\n");
+                            rowsBefore.pop();
+                            let rowNumber = rowsBefore.length;
+                            let rowValue = ta.value.split("\n")[rowNumber];
+                            let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
+                            let rowValueToCaret = rowValue.substr(0, col);
+                            if (!rowValueToCaret.includes("(")) {
+                                // outside the function
+                                let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length).trim();
+                                let functionNameSelected = col > rowValue.indexOf("=");
+                                if (functionNameSelected) {
+                                    if (functionName.length == 0 && document.getElementsByClassName("selected").length == 0) return;
+                                }
+                            }
+                            updateSelectedCompletion(0);
+                            $(".selected").click();
+                            e.preventDefault();
+                        } else if (e.which == 40) {
+                            updateSelectedCompletion(1);
+                            e.preventDefault();
+                        } else if (e.which == 38) {
+                            updateSelectedCompletion(-1);
+                            e.preventDefault();
                         }
-                    });
+                    }
+                });
 
+                // SOURCE: https://github.com/component/textarea-caret-position
+                (function () {
 
-                    let updateVariables = ()=>{
-                        eventBasedVariables = evBaVar[document.getElementById("eventtype").value];
+                    // We'll copy the properties below into the mirror div.
+                    // Note that some browsers, such as Firefox, do not concatenate properties
+                    // into their shorthand (e.g. padding-top, padding-bottom etc. -> padding),
+                    // so we have to list every single property explicitly.
+                    var properties = [
+                        'direction',  // RTL support
+                        'boxSizing',
+                        'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
+                        'height',
+                        'overflowX',
+                        'overflowY',  // copy the scrollbar for IE
+
+                        'borderTopWidth',
+                        'borderRightWidth',
+                        'borderBottomWidth',
+                        'borderLeftWidth',
+                        'borderStyle',
+
+                        'paddingTop',
+                        'paddingRight',
+                        'paddingBottom',
+                        'paddingLeft',
+
+                        // https://developer.mozilla.org/en-US/docs/Web/CSS/font
+                        'fontStyle',
+                        'fontVariant',
+                        'fontWeight',
+                        'fontStretch',
+                        'fontSize',
+                        'fontSizeAdjust',
+                        'lineHeight',
+                        'fontFamily',
+
+                        'textAlign',
+                        'textTransform',
+                        'textIndent',
+                        'textDecoration',  // might not make a difference, but better be safe
+
+                        'letterSpacing',
+                        'wordSpacing',
+
+                        'tabSize',
+                        'MozTabSize'
+
+                    ];
+
+                    var isBrowser = (typeof window !== 'undefined');
+                    var isFirefox = (isBrowser && window.mozInnerScreenX != null);
+
+                    function getCaretCoordinates(element, position, options) {
+                        if (!isBrowser) {
+                            throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');
+                        }
+
+                        var debug = options && options.debug || false;
+                        if (debug) {
+                            var el = document.querySelector('#input-textarea-caret-position-mirror-div');
+                            if (el) el.parentNode.removeChild(el);
+                        }
+
+                        // The mirror div will replicate the textarea's style
+                        var div = document.createElement('div');
+                        div.id = 'input-textarea-caret-position-mirror-div';
+                        document.body.appendChild(div);
+
+                        var style = div.style;
+                        var computed = window.getComputedStyle ? window.getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
+                        var isInput = element.nodeName === 'INPUT';
+
+                        // Default textarea styles
+                        style.whiteSpace = 'pre-wrap';
+                        if (!isInput)
+                            style.wordWrap = 'break-word';  // only for textarea-s
+
+                        // Position off-screen
+                        style.position = 'absolute';  // required to return coordinates properly
+                        if (!debug)
+                            style.visibility = 'hidden';  // not 'display: none' because we want rendering
+
+                        // Transfer the element's properties to the div
+                        properties.forEach(function (prop) {
+                            if (isInput && prop === 'lineHeight') {
+                                // Special case for <input>s because text is rendered centered and line height may be != height
+                                if (computed.boxSizing === "border-box") {
+                                    var height = parseInt(computed.height);
+                                    var outerHeight =
+                                        parseInt(computed.paddingTop) +
+                                        parseInt(computed.paddingBottom) +
+                                        parseInt(computed.borderTopWidth) +
+                                        parseInt(computed.borderBottomWidth);
+                                    var targetHeight = outerHeight + parseInt(computed.lineHeight);
+                                    if (height > targetHeight) {
+                                        style.lineHeight = height - outerHeight + "px";
+                                    } else if (height === targetHeight) {
+                                        style.lineHeight = computed.lineHeight;
+                                    } else {
+                                        style.lineHeight = 0;
+                                    }
+                                } else {
+                                    style.lineHeight = computed.height;
+                                }
+                            } else {
+                                style[prop] = computed[prop];
+                            }
+                        });
+
+                        if (isFirefox) {
+                            // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
+                            if (element.scrollHeight > parseInt(computed.height))
+                                style.overflowY = 'scroll';
+                        } else {
+                            style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
+                        }
+
+                        div.textContent = element.value.substring(0, position);
+                        // The second special handling for input type="text" vs textarea:
+                        // spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
+                        if (isInput)
+                            div.textContent = div.textContent.replace(/\s/g, '\u00a0');
+
+                        var span = document.createElement('span');
+                        // Wrapping must be replicated *exactly*, including when a long word gets
+                        // onto the next line, with whitespace at the end of the line before (#7).
+                        // The  *only* reliable way to do that is to copy the *entire* rest of the
+                        // textarea's content into the <span> created at the caret position.
+                        // For inputs, just '.' would be enough, but no need to bother.
+                        span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
+                        div.appendChild(span);
+
+                        var coordinates = {
+                            top: span.offsetTop + parseInt(computed['borderTopWidth']),
+                            left: span.offsetLeft + parseInt(computed['borderLeftWidth']),
+                            height: parseInt(computed['lineHeight'])
+                        };
+
+                        if (debug) {
+                            span.style.backgroundColor = '#aaa';
+                        } else {
+                            document.body.removeChild(div);
+                        }
+
+                        return coordinates;
                     }
 
-                    $("#eventtype").on("change", function(e){updateVariables();});
-                    updateVariables();
-                })
-            }
-            let userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
-            let messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
-            let textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
-            let voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
-            let categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
-            let evBaVar = {
-                "onMessage": [].concat(userVars).concat(textChannelVars).concat(messageVars),
-                "onJoin": [].concat(userVars),
-                "onLeave": [].concat(userVars)
-            };
-        </script>
-        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous" onload="init();"></script>
-    </head>
-    <body>
-        <input id="scriptname">
-        <select id="eventtype">
-            <option value="onMessage">onMessage</option>
-            <option value="onJoin">onJoin</option>
-            <option value="onLeave">onLeave</option>
-        </select>
-        <textarea id="scriptarea"></textarea>
-        <div id="completions"></div>
-    </body>
+                    if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
+                        module.exports = getCaretCoordinates;
+                    } else if (isBrowser) {
+                        window.getCaretCoordinates = getCaretCoordinates;
+                    }
+
+                }());
+
+
+                let updateVariables = () => {
+                    eventBasedVariables = evBaVar[document.getElementById("eventtype").value];
+                }
+
+                $("#loadscript").on("change", function (e) {
+                    let reader = new FileReader();
+                    reader.onload = (function (file) {
+                        console.log(file);
+                        return function (e) {
+                            document.getElementById("scriptarea").value = e.target.result;
+                            let scriptNameTiles = file.name.split("-")[1].split(".");
+                            scriptNameTiles.pop()
+                            document.getElementById("scriptname").value = scriptNameTiles.join(".");
+                            document.getElementById("eventtype").value = file.name.split("-")[0];
+                        };
+                    })(this.files[0]);
+                    reader.readAsText(this.files[0], "UTF-8");
+                });
+
+                for (let ev in evBaVar) {
+                    $(`<option value="${ev}">${ev}</option>`).appendTo(document.getElementById("eventtype"))
+                }
+
+                $("#eventtype").on("change", function (e) { updateVariables(); });
+                updateVariables();
+            })
+        }
+        let userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
+        let messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
+        let textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
+        let voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
+        let categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
+        let evBaVar = {
+            "onMessage": [].concat(userVars).concat(textChannelVars).concat(messageVars),
+            "onJoin": [].concat(userVars),
+            "onLeave": [].concat(userVars)
+        };
+
+        download = (filename, content) => {
+            let element = document.createElement("a");
+            element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content));
+            element.setAttribute("download", filename);
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            element.outerHTML = "";
+        }
+
+        downloadScript = () => {
+            download(`${document.getElementById("eventtype").value}-${document.getElementById("scriptname").value}.lbs`, document.getElementById("scriptarea").value);
+        }
+        loadScript = (evt) => {
+            console.log(evt);
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"
+        onload="init();"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #scriptarea {
+            width: 100%;
+            height: 600px;
+        }
+
+        #completions {
+            position: fixed;
+            background-color: #333;
+            color: #ddd;
+            padding: 5px;
+            border-radius: 7px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .selected {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    Script name: <input id="scriptname"><br>
+    Event type: <select id="eventtype"></select><br>
+    <textarea id="scriptarea"></textarea><br>
+    <input id="loadscript" type="file">
+    <button onclick="loadScript();">Download Script</button>
+</body>
+
 </html>
