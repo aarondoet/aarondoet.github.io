@@ -15,6 +15,7 @@
         };
         var eventBasedVariables = [];
         var completions = {};
+        var caretHeight;
 
         updateCompletions = (ta) => {
             completions = {};
@@ -112,7 +113,7 @@
             if (!caretPos) caretPos = $(ta).prop("selectionStart");
             let carPos = getCaretCoordinates(ta, caretPos);
             let arePos = ta.getBoundingClientRect();
-            $(completionArea).css({ "left": (carPos.left + arePos.left) + "px", "top": (carPos.top + arePos.top - ta.scrollTop + 20) + "px" });
+            $(completionArea).css({ "left": (carPos.left + arePos.left) + "px", "top": (carPos.top + arePos.top - ta.scrollTop + caretHeight + 5) + "px" });
         }
 
         updateSelectedCompletion = (cnt) => {
@@ -152,7 +153,7 @@
             $(document).ready(() => {
                 $("#scriptarea").on("keyup click focus", function (e) {
                     if (e.type == "keyup" && document.getElementById("completions") && (e.which == 38 || e.which == 40)) return;
-                    if(e.type == "keyup" && document.getElementsByClassName("selected").length > 0 && (e.which == 37 || e.which == 39)) return;
+                    if(e.type == "keyup" && $(".selected .completeLeft").length > 0 && (e.which == 37 || e.which == 39)) return;
                     if(e.type == "keyup" && e.which == 27) return;
                     updateCompletions(this);
                 });
@@ -186,22 +187,22 @@
                                 }
                             }
                             updateSelectedCompletion(0);
-                            $(".selected").click();
+                            $(".selected .completeSuggestion").click();
                             e.preventDefault();
                         }else if(e.which == 9){
                             updateSelectedCompletion(0);
-                            $(".selected").click();
+                            $(".selected .completeSuggestion").click();
                             e.preventDefault();
-                        } else if (e.which == 40) {
+                        } else if (e.which == 40 && document.getElementById("completions")) {
                             updateSelectedCompletion(1);
                             e.preventDefault();
-                        } else if (e.which == 38) {
+                        } else if (e.which == 38 && document.getElementById("completions")) {
                             updateSelectedCompletion(-1);
                             e.preventDefault();
-                        } else if(e.which == 37 && document.getElementsByClassName("selected").length > 0) {
+                        } else if(e.which == 37 && $(".selected .completeLeft").length > 0) {
                             document.getElementsByClassName("selected")[0].updateFunction(-1);
                             e.preventDefault();
-                        } else if(e.which == 39 && document.getElementsByClassName("selected").length > 0){
+                        } else if(e.which == 39 && $(".selected .completeLeft").length > 0){
                             document.getElementsByClassName("selected")[0].updateFunction(1);
                             e.preventDefault();
                         }else if(e.which == 27){
@@ -393,6 +394,15 @@
 
                 $("#eventtype").on("change", function (e) { updateVariables(); });
                 updateVariables();
+            
+                caretHeight = function(){
+                    let ta = document.createElement("textarea");
+                    document.body.appendChild(ta);
+                    ta.value = "\n";
+                    let hei = getCaretCoordinates(ta, 1).top - getCaretCoordinates(ta, 0).top;
+                    ta.outerHTML = "";
+                    return hei;
+                }();
             })
         }
         let defaultVars = ["guildid", "guildname", "guildicon", "botid"];
