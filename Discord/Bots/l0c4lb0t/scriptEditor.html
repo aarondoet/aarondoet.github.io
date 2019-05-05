@@ -9,7 +9,7 @@
             "kick": 'kick("CARET")',
             "ban": 'ban("CARET")'
         };
-        const returnOnlyFunction = {
+        const returnOnlyFunctions = {
             "startsWith": 'startsWith("CARET", "")',
             "endsWith": 'endsWith("CARET", "")'
         };
@@ -41,9 +41,10 @@
                 let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length).trim();
                 let functionNameSelected = col > rowValue.indexOf("=");
                 if (functionNameSelected) {
-                    for (let funcName in functions) {
+                    let funcs = Object.assign(Object.assign({}, functions), rowValueToCaret.includes("=") ? returnOnlyFunctions : {});
+                    for (let funcName in funcs) {
                         if (funcName.startsWith(functionName)) {
-                            completions[funcName] = functions[funcName].substr(functionName.length);
+                            completions[funcName] = funcs[funcName].substr(functionName.length);
                         }
                     }
                 }
@@ -342,10 +343,11 @@
                         console.log(file);
                         return function (e) {
                             document.getElementById("scriptarea").value = e.target.result;
-                            let scriptNameTiles = file.name.split("-")[1].split(".");
+                            let scriptNameTiles = file.name.split("-");
+                            document.getElementById("eventtype").value = scriptNameTiles.shift();
+                            scriptNameTiles = scriptNameTiles.join("-").split(".");
                             scriptNameTiles.pop()
                             document.getElementById("scriptname").value = scriptNameTiles.join(".");
-                            document.getElementById("eventtype").value = file.name.split("-")[0];
                         };
                     })(this.files[0]);
                     reader.readAsText(this.files[0], "UTF-8");

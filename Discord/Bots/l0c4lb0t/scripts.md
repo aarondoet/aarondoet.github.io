@@ -8,6 +8,11 @@ description: Everything you can use in bot scripts
 Every command has to be in his own line. They cannot use more than one line. To use line breaks in arguments, please use `\n` instead of the line break.<br>
 For everything that could be specific to a programming language (like RegEx): The bot runs in Java, that means you have to use Java syntax for everything you do.
 
+# Creating scripts
+
+You can create scripts by just using a text editor of your choice and the uploading it. But I recommend using my [script editor](./scriptEditor.html) which has auto completion and I will try to improve it.<br>
+The filename of the script has to be `event-name` (for `onJoin`: `onJoin-joinroles` or `onJoin-nickname`)
+
 # Events
 
 - `onMessage` - fires when the bot receives a message
@@ -685,6 +690,7 @@ I recommend using single quotes (`'`) for the JSON, because double quotes can ca
 - `image` - the image URL of the embed
 - `thumbnail` - the thumbnail URL of the embed
 - `url` - the URL of the embed title (requires `title`)
+- `timestamps` - the milliseconds since epoch
 - `fields` - the array of [fields](#fields) in the embed
 
 ## Fields
