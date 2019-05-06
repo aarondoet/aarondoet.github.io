@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 
 <head>
+    <title>Script Editor</title>
+    <meta charset="UTF-8">
     <script>
         const functions = {
             "sendMessage": [['sendMessage("CARET", "")'], ['sendMessage(channelId, content)']],
@@ -51,9 +53,9 @@
                 }
             } else {
                 // inside the function
-                let currVarName = rowValueToCaret.match(/(?<=%)[a-zA-Z]*$/);
+                let currVarName = rowValueToCaret.match(/%[a-zA-Z]*$/);
                 if (currVarName) {
-                    currVarName = currVarName[0];
+                    currVarName = currVarName[0].substr(1);
                     let valueBefore = rowValueToCaret.substr(0, rowValueToCaret.length - currVarName.length);
                     let complete = true;
                     for (let variable of variables) {
@@ -149,6 +151,44 @@
             ca.scrollTop = sel.offsetTop - 30;
         }
 
+        applyHighlighting = (ta) => {
+            return;
+            let text = ta.value;
+            let variables = [].concat(eventBasedVariables);
+            let highlighted = escapeHtml(text).split("\n").map(line => {
+                let retLine = "";
+                let varDef = line.match(/^( *)([a-zA-Z]+)( *)=/);
+                let varsNew = [];
+                if(varDef){
+                    varsNew.push(varDef[2]);
+                    retLine += varDef[1] + `<mark class="highlightVariableDeclaration">${varDef[2]}</mark>` + varDef[3] + `<mark class="highlightVariableAssignment">=</mark>`;
+                    line = line.substr(varDef[0].length);
+                }
+                let funcName = line.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
+                if(funcName){
+                    let funcArgs = funcName[4].replace(/&quot;/g, '"');
+                    let argMatch = funcArgs.match(/^( *)"(.*)"( *),( *)"(.*)"( *),( *)"(.*)"( *)$/);
+                    if(!argMatch) argMatch = funcArgs.match(/^( *)"(.*)"( *),( *)"(.*)"( *)$/);
+                    if(!argMatch) argMatch = funcArgs.match(/^( *)"(.*)"( *)$/);
+                    if(!argMatch) argMatch = funcArgs.match(/^( *)$/);
+                    if(argMatch){
+                        funcArgs = "";
+                        for(let i = 1; i < argMatch.length; i+=3){
+                            let argInner = argMatch[i+1];
+                            argInner = argInner.replace(new RegExp(`%(${variables.map(v => escapeRegex(v)).join("|")})%`, "g"), `<mark class="highlightVariableMark">%</mark><mark class="highlightVariableName">$1</mark><mark class="highlightVariableMark">%</mark>`);
+                            funcArgs += argMatch[i] + `<mark class="highlightFunctionQuot">&quot;</mark>` + `<mark class="highlightFunctionArgument">${argInner}</mark>` + `<mark class="highlightFunctionQuot">&quot;</mark>` + argMatch[i+2];
+                            if(i < argMatch.length) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
+                        }
+                    }
+                    retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
+                    line = line.substr(funcName[0].length);
+                }
+                variables.push(varsNew);
+                return retLine;
+            }).join("\n").replace(/\n/g, '<br>');
+            $("#highlights").html(highlighted);
+        }
+
         init = () => {
             $(document).ready(() => {
                 $("#scriptarea").on("keyup click focus", function (e) {
@@ -212,162 +252,26 @@
                     }
                 });
 
+                $("#scriptarea").on("scroll", function(e){
+                    let scrollTop = $(this).scrollTop();
+                    $("#backdrop").scrollTop(scrollTop);
+                });
+                $("#scriptarea").on("input propertychange change paste", function(e){
+                    applyHighlighting(this);
+                });
+                
                 // SOURCE: https://github.com/component/textarea-caret-position
-                (function () {
-
-                    // We'll copy the properties below into the mirror div.
-                    // Note that some browsers, such as Firefox, do not concatenate properties
-                    // into their shorthand (e.g. padding-top, padding-bottom etc. -> padding),
-                    // so we have to list every single property explicitly.
-                    var properties = [
-                        'direction',  // RTL support
-                        'boxSizing',
-                        'width',  // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
-                        'height',
-                        'overflowX',
-                        'overflowY',  // copy the scrollbar for IE
-
-                        'borderTopWidth',
-                        'borderRightWidth',
-                        'borderBottomWidth',
-                        'borderLeftWidth',
-                        'borderStyle',
-
-                        'paddingTop',
-                        'paddingRight',
-                        'paddingBottom',
-                        'paddingLeft',
-
-                        // https://developer.mozilla.org/en-US/docs/Web/CSS/font
-                        'fontStyle',
-                        'fontVariant',
-                        'fontWeight',
-                        'fontStretch',
-                        'fontSize',
-                        'fontSizeAdjust',
-                        'lineHeight',
-                        'fontFamily',
-
-                        'textAlign',
-                        'textTransform',
-                        'textIndent',
-                        'textDecoration',  // might not make a difference, but better be safe
-
-                        'letterSpacing',
-                        'wordSpacing',
-
-                        'tabSize',
-                        'MozTabSize'
-
-                    ];
-
-                    var isBrowser = (typeof window !== 'undefined');
-                    var isFirefox = (isBrowser && window.mozInnerScreenX != null);
-
-                    function getCaretCoordinates(element, position, options) {
-                        if (!isBrowser) {
-                            throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');
-                        }
-
-                        var debug = options && options.debug || false;
-                        if (debug) {
-                            var el = document.querySelector('#input-textarea-caret-position-mirror-div');
-                            if (el) el.parentNode.removeChild(el);
-                        }
-
-                        // The mirror div will replicate the textarea's style
-                        var div = document.createElement('div');
-                        div.id = 'input-textarea-caret-position-mirror-div';
-                        document.body.appendChild(div);
-
-                        var style = div.style;
-                        var computed = window.getComputedStyle ? window.getComputedStyle(element) : element.currentStyle;  // currentStyle for IE < 9
-                        var isInput = element.nodeName === 'INPUT';
-
-                        // Default textarea styles
-                        style.whiteSpace = 'pre-wrap';
-                        if (!isInput)
-                            style.wordWrap = 'break-word';  // only for textarea-s
-
-                        // Position off-screen
-                        style.position = 'absolute';  // required to return coordinates properly
-                        if (!debug)
-                            style.visibility = 'hidden';  // not 'display: none' because we want rendering
-
-                        // Transfer the element's properties to the div
-                        properties.forEach(function (prop) {
-                            if (isInput && prop === 'lineHeight') {
-                                // Special case for <input>s because text is rendered centered and line height may be != height
-                                if (computed.boxSizing === "border-box") {
-                                    var height = parseInt(computed.height);
-                                    var outerHeight =
-                                        parseInt(computed.paddingTop) +
-                                        parseInt(computed.paddingBottom) +
-                                        parseInt(computed.borderTopWidth) +
-                                        parseInt(computed.borderBottomWidth);
-                                    var targetHeight = outerHeight + parseInt(computed.lineHeight);
-                                    if (height > targetHeight) {
-                                        style.lineHeight = height - outerHeight + "px";
-                                    } else if (height === targetHeight) {
-                                        style.lineHeight = computed.lineHeight;
-                                    } else {
-                                        style.lineHeight = 0;
-                                    }
-                                } else {
-                                    style.lineHeight = computed.height;
-                                }
-                            } else {
-                                style[prop] = computed[prop];
-                            }
-                        });
-
-                        if (isFirefox) {
-                            // Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275
-                            if (element.scrollHeight > parseInt(computed.height))
-                                style.overflowY = 'scroll';
-                        } else {
-                            style.overflow = 'hidden';  // for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'
-                        }
-
-                        div.textContent = element.value.substring(0, position);
-                        // The second special handling for input type="text" vs textarea:
-                        // spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
-                        if (isInput)
-                            div.textContent = div.textContent.replace(/\s/g, '\u00a0');
-
-                        var span = document.createElement('span');
-                        // Wrapping must be replicated *exactly*, including when a long word gets
-                        // onto the next line, with whitespace at the end of the line before (#7).
-                        // The  *only* reliable way to do that is to copy the *entire* rest of the
-                        // textarea's content into the <span> created at the caret position.
-                        // For inputs, just '.' would be enough, but no need to bother.
-                        span.textContent = element.value.substring(position) || '.';  // || because a completely empty faux span doesn't render at all
-                        div.appendChild(span);
-
-                        var coordinates = {
-                            top: span.offsetTop + parseInt(computed['borderTopWidth']),
-                            left: span.offsetLeft + parseInt(computed['borderLeftWidth']),
-                            height: parseInt(computed['lineHeight'])
-                        };
-
-                        if (debug) {
-                            span.style.backgroundColor = '#aaa';
-                        } else {
-                            document.body.removeChild(div);
-                        }
-
-                        return coordinates;
-                    }
-
-                    if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
-                        module.exports = getCaretCoordinates;
-                    } else if (isBrowser) {
-                        window.getCaretCoordinates = getCaretCoordinates;
-                    }
-
-                }());
-
-
+                (function () {/* We'll copy the properties below into the mirror div. Note that some browsers, such as Firefox, do not concatenate properties into their shorthand (e.g. padding-top, padding-bottom etc. -> padding), so we have to list every single property explicitly.*/var properties = ['direction',  /* RTL support*/'boxSizing','width',  /* on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does*/'height','overflowX','overflowY',/* copy the scrollbar for IE*/
+                'borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth','borderStyle','paddingTop','paddingRight','paddingBottom','paddingLeft',/* https://developer.mozilla.org/en-US/docs/Web/CSS/font*/'fontStyle','fontVariant','fontWeight','fontStretch','fontSize','fontSizeAdjust','lineHeight','fontFamily','textAlign','textTransform','textIndent','textDecoration',  /* might not make a difference, but better be safe*/'letterSpacing','wordSpacing','tabSize','MozTabSize'];
+                var isBrowser = (typeof window !== 'undefined');var isFirefox = (isBrowser && window.mozInnerScreenX != null);function getCaretCoordinates(element, position, options) {if (!isBrowser) {throw new Error('textarea-caret-position#getCaretCoordinates should only be called in a browser');}var debug = options && options.debug || false;if (debug) {var el = document.querySelector('#input-textarea-caret-position-mirror-div');if (el) el.parentNode.removeChild(el);}/* The mirror div will replicate the textarea's style*/
+                var div = document.createElement('div');div.id = 'input-textarea-caret-position-mirror-div';document.body.appendChild(div);var style = div.style;var computed = window.getComputedStyle ? window.getComputedStyle(element) : element.currentStyle;  /* currentStyle for IE < 9*/var isInput = element.nodeName === 'INPUT';/* Default textarea styles*/style.whiteSpace = 'pre-wrap';if (!isInput)style.wordWrap = 'break-word';  /* only for textarea-s*//* Position off-screen*/
+                style.position = 'absolute';  /* required to return coordinates properly*/if (!debug)style.visibility = 'hidden';  /* not 'display: none' because we want rendering*//* Transfer the element's properties to the div*/properties.forEach(function (prop) {if (isInput && prop === 'lineHeight') {/* Special case for <input>s because text is rendered centered and line height may be != height*/if (computed.boxSizing === "border-box") {var height = parseInt(computed.height);
+                var outerHeight =parseInt(computed.paddingTop) +parseInt(computed.paddingBottom) +parseInt(computed.borderTopWidth) +parseInt(computed.borderBottomWidth);var targetHeight = outerHeight + parseInt(computed.lineHeight);if (height > targetHeight) {style.lineHeight = height - outerHeight + "px";} else if (height === targetHeight) {style.lineHeight = computed.lineHeight;} else {style.lineHeight = 0;}} else {style.lineHeight = computed.height;}} else {style[prop] = computed[prop];}});if (isFirefox) 
+                {/* Firefox lies about the overflow property for textareas: https://bugzilla.mozilla.org/show_bug.cgi?id=984275*/if (element.scrollHeight > parseInt(computed.height))style.overflowY = 'scroll';} else {style.overflow = 'hidden';  /* for Chrome to not render a scrollbar; IE keeps overflowY = 'scroll'*/}div.textContent = element.value.substring(0, position);/* The second special handling for input type="text" vs textarea: spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037*/
+                if (isInput)div.textContent = div.textContent.replace(/\s/g, '\u00a0');var span = document.createElement('span');/* Wrapping must be replicated *exactly*, including when a long word gets onto the next line, with whitespace at the end of the line before (#7). The  *only* reliable way to do that is to copy the *entire* rest of the textarea's content into the <span> created at the caret position. For inputs, just '.' would be enough, but no need to bother.*/
+                span.textContent = element.value.substring(position) || '.';  /* || because a completely empty faux span doesn't render at all*/div.appendChild(span);var coordinates = {top: span.offsetTop + parseInt(computed['borderTopWidth']),left: span.offsetLeft + parseInt(computed['borderLeftWidth']),height: parseInt(computed['lineHeight'])};if (debug) {span.style.backgroundColor = '#aaa';} else {document.body.removeChild(div);}return coordinates;}if (typeof module != 'undefined' && typeof module.exports != 'undefined') 
+                {module.exports = getCaretCoordinates;} else if (isBrowser) {window.getCaretCoordinates = getCaretCoordinates;}}());
+                
                 let updateVariables = () => {
                     eventBasedVariables = evBaVar[document.getElementById("eventtype").value];
                 }
@@ -405,13 +309,13 @@
                 }();
             })
         }
-        let defaultVars = ["guildid", "guildname", "guildicon", "botid"];
-        let userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
-        let messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
-        let textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
-        let voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
-        let categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
-        let evBaVar = {
+        const defaultVars = ["guildid", "guildname", "guildicon", "botid"];
+        const userVars = ["userid", "username", "usernick", "userpfp", "discriminator", "usermention"];
+        const messageVars = ["content", "messageid", "messageurl", "embedcount", "attachmentcount", "pinned", "tts", "mentionseveryone"];
+        const textChannelVars = ["channelid", "channelmention", "channelname", "channeltopic", "categoryid", "nsfw", "slowmode"];
+        const voiceChannelVars = ["channelid", "channelmention", "channelname", "categoryid", "bitrate", "userlimit", "connectedusercount"];
+        const categoryVars = ["channelid", "channelmention", "channelname", "channelcount"];
+        const evBaVar = {
             "onMessage": [].concat(defaultVars).concat(userVars).concat(textChannelVars).concat(messageVars),
             "onJoin": [].concat(defaultVars).concat(userVars),
             "onLeave": [].concat(defaultVars).concat(userVars)
@@ -433,19 +337,36 @@
         loadScript = (evt) => {
             console.log(evt);
         }
+
+        escapeHtml = (txt) => {
+            return txt.replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+        }
+        escapeRegex = (txt) => {
+            return txt.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
     </script>
-    <script src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"
-        onload="init();"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous" onload="init();"></script>
     <style>
+        * {
+            font-family: Helvetica;
+            font-size: 13px;
+        }
         html {
             scroll-behavior: smooth;
-            font-family: Arial, Helvetica, sans-serif;
         }
 
         #scriptarea {
             width: 100%;
             height: 600px;
+            background-color: transparent;
+            color: black;
+            margin: 0;
+            border-radius: 0;
+            position: relative;
         }
 
         #completions {
@@ -470,11 +391,67 @@
             float: right;
             cursor: pointer;
         }
+        #container {
+            position: relative;
+            height: 60%;
+            width: 100%;
+        }
+        #backdrop {
+            background-color: #fff;
+            overflow: auto;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        #highlights {
+            color: transparent;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: absolute;
+            left: 3px;
+            top: 2px;
+        }
+        mark {
+            color: transparent;
+        }
+        .highlightFunctionName {
+            background-color: yellow;
+        }
+        .highlightVariableName {
+            background-color: rgb(183, 128, 235);
+        }
+        .highlightVariableMark {
+            background-color: hotpink;
+        }
+        .highlightVariableDeclaration {
+            background-color: #aaa;
+        }
+        .highlightVariableAssignment {
+            background-color: red;
+        }
+        .highlightFunctionArguments {
+            background-color: aqua;
+        }
+        .highlightFunctionArgument {
+            background-color: bisque;
+        }
+        .highlightFunctionQuot {
+            background-color: brown;
+        }
+        .highlightFunctionComma {
+            background-color: burlywood;
+        }
+        .highlightParentheseOpen {
+            background-color: cadetblue;
+        }
+        .highlightParentheseClose {
+            background-color: cadetblue;
+        }
     </style>
 </head>
 
 <body>
-    <p>
+    <div>
         To learn how scripts work, read <a href="./scripts.html">the docs</a> about it.<br>
         Here is a short summary:
         <ul>
@@ -482,12 +459,15 @@
             <li><code>variable=someFunction()</code> saves the return value of the function in <code>variable</code>. To access it again use <code>%variable%</code>.</li>
             <li>There are variables that you can use for each event. They don't have to be defined.</li>
         </ul>
-    </p>
+    </div><br>
     Script name: <input id="scriptname"><br>
     Event type: <select id="eventtype"></select><br>
-    <textarea id="scriptarea"></textarea><br>
+    <div id="container">
+        <div id="backdrop"><div id="highlights"></div></div>
+        <textarea id="scriptarea"></textarea>
+    </div><br>
     <input id="loadscript" type="file">
-    <button onclick="loadScript();">Download Script</button>
+    <button onclick="downloadScript();">Download Script</button>
 </body>
 
 </html>
