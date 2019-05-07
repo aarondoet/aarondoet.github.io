@@ -5,16 +5,29 @@
     <title>Script Editor</title>
     <meta charset="UTF-8">
     <script>
-        const functions = {
+        const mayReturnFunctions = {
             "sendMessage": [['sendMessage("CARET", "")'], ['sendMessage(channelId, content)']],
-            "deleteMessage": [['deleteMessage("CARET")'], ['deleteMessage(messageId)']],
-            "kick": [['kick("CARET", "")', 'kick("CARET")'], ['kick(userId, reason)', 'kick(userId)']],
-            "ban": [['ban("CARET", "")', 'ban("CARET")'], ['ban(userId, reason)', 'ban(userId)']]
+            "editMessage": [['editMessage("CARET", "", "")'], ['editMessage(channelId, messageId, newContent)']],
+            "setNickname": [['setNickname("CARET", "")'], ['setNickname(userId, newNick)']],
+            "resetNickname": [['resetNickname("CARET")'], ['resetNickname(userId)']],
+            "createRole": [['createRole("CARET")'], ['createRole(roleName)']]
         };
         const returnOnlyFunctions = {
             "startsWith": [['startsWith("CARET", "")'], ['startsWith(text, with)']],
             "endsWith": [['endsWith("CARET", "")'], ['endsWith(text, with)']]
         };
+        const neverReturnFunctions = {
+            "deleteMessage": [['deleteMessage("CARET", "")'], ['deleteMessage(channelId, messageId)']],
+            "sendDM": [['sendDM("CARET", "")'], ['sendDM(userId, content)']],
+            "giveRole": [['giveRole("CARET", "")'], ['giveRole(userId, roleId)']],
+            "removeRole": [['removeRole("CARET", "")'], ['removeRole(userId, roleId)']],
+            "kick": [['kick("CARET", "")', 'kick("CARET")'], ['kick(userId, reason)', 'kick(userId)']],
+            "ban": [['ban("CARET", "")', 'ban("CARET")'], ['ban(userId, reason)', 'ban(userId)']],
+            "unban": [['unban("CARET")'], ['unban(userId)']],
+            "clearReactions": [['clearReactions("CARET", "")'], ['clearReactions(channelId, messageId)']],
+            "deleteRole": [['deleteRole("CARET")'], ['deleteRole(roleId)']],
+            "wait": [['wait("CARET")'], ['wait(milliseconds)']]
+        }
         var eventBasedVariables = [];
         var completions = {};
         var caretHeight;
@@ -45,7 +58,7 @@
                 let functionName = rowValueToCaret.substring(rowValueToCaret.indexOf("=") + 1, rowValueToCaret.length).trim();
                 let functionNameSelected = col > rowValue.indexOf("=");
                 if (functionNameSelected) {
-                    let funcs = Object.assign(Object.assign({}, functions), rowValueToCaret.includes("=") ? returnOnlyFunctions : {});
+                    let funcs = Object.assign(Object.assign({}, mayReturnFunctions), rowValueToCaret.includes("=") ? returnOnlyFunctions : neverReturnFunctions);
                     for (let funcName in funcs) {
                         if (funcName.trim().startsWith(functionName)) {
                             completions[funcName] = [funcs[funcName][0].map(x => x.substr(functionName.length)), funcs[funcName][1]];
@@ -56,6 +69,7 @@
                 // inside the function
                 let currVarName = rowValueToCaret.match(/%[a-zA-Z]*$/);
                 if (currVarName) {
+                    // fuck firefox for not being able to process lookbehinds
                     currVarName = currVarName[0].substr(1);
                     let valueBefore = rowValueToCaret.substr(0, rowValueToCaret.length - currVarName.length);
                     let complete = true;
@@ -153,15 +167,15 @@
         }
 
         applyHighlighting = (ta) => {
-            if(!highl) return;
+            if(!document.getElementById("highlightingbox").checked) return;
             let text = ta.value;
             let variables = [].concat(eventBasedVariables);
             let highlighted = escapeHtml(text).split("\n").map(line => {
                 let retLine = "";
                 let varDef = line.match(/^( *)([a-zA-Z]+)( *)=/);
-                let varsNew = [];
+                let varNew;
                 if(varDef){
-                    varsNew.push(varDef[2]);
+                    varNew = varDef[2];
                     retLine += varDef[1] + `<mark class="highlightVariableDeclaration">${varDef[2]}</mark>` + varDef[3] + `<mark class="highlightVariableAssignment">=</mark>`;
                     line = line.substr(varDef[0].length);
                 }
@@ -184,7 +198,7 @@
                     retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
                     line = line.substr(funcName[0].length);
                 }
-                variables.push(varsNew);
+                if(varNew) variables.push(varNew);
                 return retLine;
             }).join("\n").replace(/\n/g, '<br>');
             $("#highlights").html(highlighted);
@@ -454,11 +468,12 @@
         <ul>
             <li><code>functionName("argument1", "argument2")</code> calls a function. The number of arguments can be different for each function.</li>
             <li><code>variable=someFunction()</code> saves the return value of the function in <code>variable</code>. To access it again use <code>%variable%</code>.</li>
-            <li>There are variables that you can use for each event. They don't have to be defined.</li>
+            <li>Some functions can return something, some function never return anything and some functions do nothing else than returning a value.</li>
+            <li>There are variables that you can use for each event. They don't have to be defined by you.</li>
         </ul>
     </div><br>
     Script name: <input id="scriptname"><br>
-    Event type: <select id="eventtype"></select><br>
+    Event type: <select id="eventtype"></select><label><input type="checkbox" id="highlightingbox">Enable syntax highlighting (looks like shit rn, but just as proof of concept)</label><br>
     <div id="container">
         <div id="backdrop"><div id="highlights"></div></div>
         <textarea id="scriptarea"></textarea>

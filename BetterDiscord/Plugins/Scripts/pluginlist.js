@@ -80,7 +80,7 @@ window.setTimeout(()=>{
 			let dl=pp=>{
 				fs.unlink(pp,e=>{});
 			}
-			for(let p of ["test"]){
+			for(let p of ["AccountSwitcher", "BackupContacts", "GuildData", "Minespoiler"]){
 				let pp=getPP(p+".plugin.js");
 				let dp=getPP(p+".config.json");
 				dl(pp);
