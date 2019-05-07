@@ -18,6 +18,7 @@
         var eventBasedVariables = [];
         var completions = {};
         var caretHeight;
+        var highl = false;
 
         updateCompletions = (ta) => {
             completions = {};
@@ -152,7 +153,7 @@
         }
 
         applyHighlighting = (ta) => {
-            return;
+            if(!highl) return;
             let text = ta.value;
             let variables = [].concat(eventBasedVariables);
             let highlighted = escapeHtml(text).split("\n").map(line => {
@@ -279,7 +280,6 @@
                 $("#loadscript").on("change", function (e) {
                     let reader = new FileReader();
                     reader.onload = (function (file) {
-                        console.log(file);
                         return function (e) {
                             document.getElementById("scriptarea").value = e.target.result;
                             let scriptNameTiles = file.name.split("-");
@@ -333,9 +333,6 @@
 
         downloadScript = () => {
             download(`${document.getElementById("eventtype").value}-${document.getElementById("scriptname").value}.lbs`, document.getElementById("scriptarea").value);
-        }
-        loadScript = (evt) => {
-            console.log(evt);
         }
 
         escapeHtml = (txt) => {
