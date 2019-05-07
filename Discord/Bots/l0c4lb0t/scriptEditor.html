@@ -6,10 +6,10 @@
     <meta charset="UTF-8">
     <script>
         const mayReturnFunctions = {
-            "sendMessage": [['sendMessage("CARET", "")'], ['sendMessage(channelId, content)']],
-            "editMessage": [['editMessage("CARET", "", "")'], ['editMessage(channelId, messageId, newContent)']],
-            "setNickname": [['setNickname("CARET", "")'], ['setNickname(userId, newNick)']],
-            "resetNickname": [['resetNickname("CARET")'], ['resetNickname(userId)']],
+            "sendMessage": [['sendMessage("SELSTART%channelid%CARET", "")'], ['sendMessage(channelId, content)']],
+            "editMessage": [['editMessage("SELSTART%channelid%CARET", "", "")'], ['editMessage(channelId, messageId, newContent)']],
+            "setNickname": [['setNickname("SELSTART%userid%CARET", "")'], ['setNickname(userId, newNick)']],
+            "resetNickname": [['resetNickname("SELSTART%userid%CARET")'], ['resetNickname(userId)']],
             "createRole": [['createRole("CARET")'], ['createRole(roleName)']]
         };
         const returnOnlyFunctions = {
@@ -17,12 +17,12 @@
             "endsWith": [['endsWith("CARET", "")'], ['endsWith(text, with)']]
         };
         const neverReturnFunctions = {
-            "deleteMessage": [['deleteMessage("CARET", "")'], ['deleteMessage(channelId, messageId)']],
-            "sendDM": [['sendDM("CARET", "")'], ['sendDM(userId, content)']],
-            "giveRole": [['giveRole("CARET", "")'], ['giveRole(userId, roleId)']],
-            "removeRole": [['removeRole("CARET", "")'], ['removeRole(userId, roleId)']],
-            "kick": [['kick("CARET", "")', 'kick("CARET")'], ['kick(userId, reason)', 'kick(userId)']],
-            "ban": [['ban("CARET", "")', 'ban("CARET")'], ['ban(userId, reason)', 'ban(userId)']],
+            "deleteMessage": [['deleteMessage("SELSTART%channelid%CARET", "%messageid%")'], ['deleteMessage(channelId, messageId)']],
+            "sendDM": [['sendDM("SELSTART%userid%CARET", "")'], ['sendDM(userId, content)']],
+            "giveRole": [['giveRole("SELSTART%userid%CARET", "")'], ['giveRole(userId, roleId)']],
+            "removeRole": [['removeRole("SELSTART%userid%CARET", "")'], ['removeRole(userId, roleId)']],
+            "kick": [['kick("SELSTART%userid%CARET", "")', 'kick("SELSTART%userid%CARET")'], ['kick(userId, reason)', 'kick(userId)']],
+            "ban": [['ban("SELSTART%userid%CARET", "")', 'ban("SELSTART%userid%CARET")'], ['ban(userId, reason)', 'ban(userId)']],
             "unban": [['unban("CARET")'], ['unban(userId)']],
             "clearReactions": [['clearReactions("CARET", "")'], ['clearReactions(channelId, messageId)']],
             "deleteRole": [['deleteRole("CARET")'], ['deleteRole(roleId)']],
@@ -31,7 +31,6 @@
         var eventBasedVariables = [];
         var completions = {};
         var caretHeight;
-        var highl = false;
 
         updateCompletions = (ta) => {
             completions = {};
@@ -99,8 +98,11 @@
                     let aComplete = $(`<span class="completeSuggestion"></span>`).appendTo(this);
                     aComplete[0].innerText = completions[completion][1][newIndex];
                     aComplete.on("click", ()=>{
-                        ta.value = ta.value.substr(0, caretPos) + completions[completion][0][getVariation(el[0])].replace("CARET", "") + ta.value.substring(caretPos, ta.value.length);
-                        ta.selectionEnd = caretPos + completions[completion][0][getVariation(el[0])].indexOf("CARET");
+                        let compl = completions[completion][0][getVariation(el[0])];
+                        if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET');
+                        ta.value = ta.value.substr(0, caretPos) + compl.replace("CARET", "").replace("SELSTART", "") + ta.value.substring(caretPos, ta.value.length);
+                        ta.selectionEnd = caretPos + compl.replace("SELSTART", "").indexOf("CARET");
+                        if(compl.indexOf("SELSTART") > -1) ta.selectionStart = caretPos + compl.indexOf("SELSTART");
                         ta.focus();
                     });
                     if(funcCount > 1){
@@ -473,7 +475,9 @@
         </ul>
     </div><br>
     Script name: <input id="scriptname"><br>
-    Event type: <select id="eventtype"></select><label><input type="checkbox" id="highlightingbox">Enable syntax highlighting (looks like shit rn, but just as proof of concept)</label><br>
+    Event type: <select id="eventtype"></select><br>
+    <label><input type="checkbox" id="highlightingbox">Enable syntax highlighting (looks like shit rn, but just as proof of concept)</label><br>
+    <label><input type="checkbox" id="defaultvariablecompletion">Insert default variables in auto completion</label>
     <div id="container">
         <div id="backdrop"><div id="highlights"></div></div>
         <textarea id="scriptarea"></textarea>
