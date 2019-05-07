@@ -192,7 +192,7 @@
                             let argInner = argMatch[i+1];
                             argInner = argInner.replace(new RegExp(`%(${variables.map(v => escapeRegex(v)).join("|")})%`, "g"), `<mark class="highlightVariableMark">%</mark><mark class="highlightVariableName">$1</mark><mark class="highlightVariableMark">%</mark>`);
                             funcArgs += argMatch[i] + `<mark class="highlightFunctionQuot">&quot;</mark>` + `<mark class="highlightFunctionArgument">${argInner}</mark>` + `<mark class="highlightFunctionQuot">&quot;</mark>` + argMatch[i+2];
-                            if(i < argMatch.length) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
+                            if(i < argMatch.length-3) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
                         }
                     }
                     retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
