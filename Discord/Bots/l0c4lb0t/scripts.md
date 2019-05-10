@@ -11,7 +11,8 @@ For everything that could be specific to a programming language (like RegEx): Th
 # Creating scripts
 
 You can create scripts by just using a text editor of your choice and the uploading it. But I recommend using my [script editor](./scriptEditor.html) which has auto completion and I will try to improve it.<br>
-The filename of the script has to be `event-name` (for `onJoin`: `onJoin-joinroles` or `onJoin-nickname`)
+The filename of the script has to be `event-name` (for `onJoin`: `onJoin-joinroles` or `onJoin-nickname`).
+If you want to add comments to your code you can do that by starting a line with `//` and it will get ignored.
 
 # Events
 
@@ -38,6 +39,13 @@ The filename of the script has to be `event-name` (for `onJoin`: `onJoin-joinrol
 - `onVoiceChannelDeleted` - fires when a voice channel gets deleted
 - `onRoleCreated` - fires when a role gets created
 - `onRoleDeleted` - fires when a role gets deleted
+
+# Parameters
+
+Most functions take parameters to execute something based on them. The parameter you give has to exactly match the requirements. The following list shows you what certain parameters expect. If multiple channels/roles/... match the input it takes the first one it finds.
+- `channel` has to be a channel. It takes channels by their id, their name and their mention (`<#channelid>`).
+- `user` has to be a user. That can be the user id, the user tag (`username#0000`) or the user mention (`<@userid>`).
+- `role` has to be a role, which can be the role's id or the role's name.
 
 # Functions
 

@@ -13,6 +13,7 @@
             "createRole": [['createRole("CARET")'], ['createRole(roleName)']]
         };
         const returnOnlyFunctions = {
+            "isInVoiceChannel": [['isInVoiceChannel("SELSTART%userid%CARET", "")', 'isInVoiceChannel("SELSTART%userid%CARET")'], ['isInVoiceChannel(userId, channelId)', 'isInVoiceChannel(userId)']],
             "startsWith": [['startsWith("CARET", "")'], ['startsWith(text, with)']],
             "endsWith": [['endsWith("CARET", "")'], ['endsWith(text, with)']]
         };
@@ -59,7 +60,7 @@
                 if (functionNameSelected) {
                     let funcs = Object.assign(Object.assign({}, mayReturnFunctions), rowValueToCaret.includes("=") ? returnOnlyFunctions : neverReturnFunctions);
                     for (let funcName in funcs) {
-                        if (funcName.trim().startsWith(functionName)) {
+                        if (funcName.trim().toLowerCase().startsWith(functionName.toLowerCase())) {
                             completions[funcName] = [funcs[funcName][0].map(x => x.substr(functionName.length)), funcs[funcName][1]];
                         }
                     }
@@ -99,7 +100,7 @@
                     aComplete[0].innerText = completions[completion][1][newIndex];
                     aComplete.on("click", ()=>{
                         let compl = completions[completion][0][getVariation(el[0])];
-                        if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET');
+                        if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET').replace(/%[a-zA-Z]+%/g, '');
                         ta.value = ta.value.substr(0, caretPos) + compl.replace("CARET", "").replace("SELSTART", "") + ta.value.substring(caretPos, ta.value.length);
                         ta.selectionEnd = caretPos + compl.replace("SELSTART", "").indexOf("CARET");
                         if(compl.indexOf("SELSTART") > -1) ta.selectionStart = caretPos + compl.indexOf("SELSTART");
@@ -169,7 +170,10 @@
         }
 
         applyHighlighting = (ta) => {
-            if(!document.getElementById("highlightingbox").checked) return;
+            if(!document.getElementById("highlightingbox").checked){
+                $("#highlights").html(escapeHtml(ta.value).replace("\n", "<br>"));
+                return;
+            }
             let text = ta.value;
             let variables = [].concat(eventBasedVariables);
             let highlighted = escapeHtml(text).split("\n").map(line => {
@@ -199,9 +203,11 @@
                     }
                     retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
                     line = line.substr(funcName[0].length);
+                }else if(line.match(/^( *)\/\/.*/)){
+                    retLine += `<mark class="highlightComment">${line}</mark>`;
                 }
                 if(varNew) variables.push(varNew);
-                return retLine;
+                return retLine || `<mark>${line}</mark>`;
             }).join("\n").replace(/\n/g, '<br>');
             $("#highlights").html(highlighted);
         }
@@ -216,6 +222,7 @@
                 });
                 $("#scriptarea").on("scroll resize", function (e) {
                     updateCompletionsPos(this, null, document.getElementById("completions"));
+                    $("#backdrop").scrollTop($(this).scrollTop());
                 });
                 $("#scriptarea").on("blur", function (e) {
                     window.setTimeout(() => {
@@ -226,7 +233,7 @@
                 });
                 $("#scriptarea").on("keydown", function (e) {
                     if (Object.keys(completions).length > 0) {
-                        if (e.which == 13) {
+                        if (e.which == 13 && document.getElementById("completions")) {
                             let ta = document.getElementById("scriptarea");
                             let caretPos = $(ta).prop("selectionStart");
                             let rowsBefore = ta.value.substr(0, caretPos).split("\n");
@@ -267,14 +274,7 @@
                             if(ca) ca.outerHTML = "";
                         }
                     }
-                });
-
-                $("#scriptarea").on("scroll", function(e){
-                    let scrollTop = $(this).scrollTop();
-                    $("#backdrop").scrollTop(scrollTop);
-                });
-                $("#scriptarea").on("input propertychange change paste", function(e){
-                    applyHighlighting(this);
+                    window.setTimeout(()=>applyHighlighting(this), 0);
                 });
                 
                 // SOURCE: https://github.com/component/textarea-caret-position
@@ -376,7 +376,8 @@
             width: 100%;
             height: 600px;
             background-color: transparent;
-            color: black;
+            color: transparent;
+            caret-color: black;
             margin: 0;
             border-radius: 0;
             position: relative;
@@ -417,15 +418,15 @@
             height: 100%;
         }
         #highlights {
-            color: transparent;
             white-space: pre-wrap;
             word-wrap: break-word;
             position: absolute;
             left: 3px;
-            top: 2px;
+            top: 3px;
         }
         mark {
-            color: transparent;
+            color: black;
+            background-color: transparent;
         }
         .highlightFunctionName {
             background-color: yellow;
@@ -459,6 +460,10 @@
         }
         .highlightParentheseClose {
             background-color: cadetblue;
+        }
+        .highlightComment {
+            color: green;
+            font-style: italic;
         }
     </style>
 </head>
