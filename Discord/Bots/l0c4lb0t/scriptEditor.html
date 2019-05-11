@@ -276,21 +276,24 @@
             let rowValueToCaret = rowValue.substr(0, col);
             if (rowValueToCaret.includes("(")) {
                 let varDef = rowValue.match(/^( *)([a-zA-Z]+)( *)=/);
-                if(varDef) rowValue = rowValue.substr(varDef[0].length);
+                let varDefLen = 0;
+                if(varDef) varDefLen = varDef[0].length;
+                rowValue = rowValue.substr(varDefLen);
                 let m = rowValue.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
                 if(!m) return;
                 let argValue = m[4];
                 if(!argValue) return;
-                let args = parseArgs(argValue);
+                let args = parseArgs(escapeHtml(argValue).replace(/&quot;/g, '"').replace(/&#039;/g, "'"));
                 if(args.length > 1){
-                    let prefLen = m[1].length + m[2].length + m[3].length + 1;
+                    let rowPrefLen = varDefLen + m[1].length + m[2].length + m[3].length + 1;
+                    let rowsBeforeLen = caretPos - col;
                     let lens = [];
                     for(let i = 0; i < args.length; i+=4){
                         let el = document.createElement("div");
                         el.innerHTML = args[i] + args[i+1] + args[i+3];
                         lens.push(el.innerText.length + 2);
                     }
-                    let currLen = prefLen - 1;
+                    let currLen = rowPrefLen - 1;
                     let arg = -1;
                     for(let i = 0; i < lens.length; i++){
                         currLen += lens[i] + 1;
@@ -302,17 +305,20 @@
                     if(arg == -1) arg = lens.length - 1;
                     arg += cnt;
                     if(lens[arg]){
-                        currLen = prefLen - 1;
+                        currLen = rowPrefLen - 1;
                         for(let i = 0; i <= arg; i++){
                             currLen += lens[i] + 1;
                         }
-                        ta.selectionStart = currLen - 1;
+                        currLen += rowsBeforeLen;
+                        let el = document.createElement("div");
+                        el.innerHTML = args[4*arg+1];
+                        ta.selectionStart = currLen - 1 - el.innerText.length;
                         ta.selectionEnd = currLen - 1;
-                    }else if(arg == -1){
-                        currLen = prefLen + args[0].length + 1;
+                    }/*else if(arg == -1){
+                        currLen = rowsBeforeLen + rowPrefLen + args[0].length + 1;
                         ta.selectionStart = currLen;
                         ta.selectionEnd = currLen;
-                    }
+                    }*/
                 }
             }
         }
