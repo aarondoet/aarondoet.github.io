@@ -170,6 +170,7 @@
         }
 
         applyHighlighting = (ta) => {
+            if(!ta) ta = document.getElementById("scriptarea");
             if(!document.getElementById("highlightingbox").checked){
                 $("#highlights").html(escapeHtml(ta.value).replace("\n", "<br>"));
                 return;
@@ -187,29 +188,80 @@
                 }
                 let funcName = line.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
                 if(funcName){
-                    let funcArgs = funcName[4].replace(/&quot;/g, '"');
-                    let argMatch = funcArgs.match(/^( *)"(.*)"( *),( *)"(.*)"( *),( *)"(.*)"( *)$/);
-                    if(!argMatch) argMatch = funcArgs.match(/^( *)"(.*)"( *),( *)"(.*)"( *)$/);
-                    if(!argMatch) argMatch = funcArgs.match(/^( *)"(.*)"( *)$/);
-                    if(!argMatch) argMatch = funcArgs.match(/^( *)$/);
-                    if(argMatch){
+                    let funcArgs = funcName[4].replace(/&quot;/g, '"').replace(/&#039;/g, "'");
+                    let args = parseArgs(funcArgs, variables);
+                    if(args.length == 1){
+                        funcArgs = `<mark class="highlightInvalidArgument">${args[0]}</mark>`;
+                    }else{
                         funcArgs = "";
-                        for(let i = 1; i < argMatch.length; i+=3){
-                            let argInner = argMatch[i+1];
-                            argInner = argInner.replace(new RegExp(`%(${variables.map(v => escapeRegex(v)).join("|")})%`, "g"), `<mark class="highlightVariableMark">%</mark><mark class="highlightVariableName">$1</mark><mark class="highlightVariableMark">%</mark>`);
-                            funcArgs += argMatch[i] + `<mark class="highlightFunctionQuot">&quot;</mark>` + `<mark class="highlightFunctionArgument">${argInner}</mark>` + `<mark class="highlightFunctionQuot">&quot;</mark>` + argMatch[i+2];
-                            if(i < argMatch.length-3) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
+                        for(let i = 0; i < args.length;  i+=4){
+                            funcArgs += `${args[i]}<mark class="highlightFunctionQuot">${args[i+2]}</mark><mark class="highlightFunctionArgument">${args[i+1]}</mark><mark class="highlightFunctionQuot">${args[i+2]}</mark>${args[i+3]}`;
+                            if(i+4 < args.length) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
                         }
                     }
                     retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
                     line = line.substr(funcName[0].length);
                 }else if(line.match(/^( *)\/\/.*/)){
                     retLine += `<mark class="highlightComment">${line}</mark>`;
+                }else{
+                    retLine += `<mark>${line}</mark>`
                 }
                 if(varNew) variables.push(varNew);
                 return retLine || `<mark>${line}</mark>`;
             }).join("\n").replace(/\n/g, '<br>');
             $("#highlights").html(highlighted);
+        }
+
+        parseArgs = (content, variables) => {
+            let args = [];
+            let escaped = false;
+            let inQuotes = false;
+            let quoteChar = '-';
+            let afterComma = true;
+            let currArg = "";
+            for(let c of content){
+                if(inQuotes){
+                    if(c == '\\' && !escaped){
+                        currArg += `<mark class="highlightEscaping">\\</mark>`;
+                        escaped = true;
+                        continue;
+                    }else if(c == quoteChar && c != '-' && !escaped){
+                        args.push(currArg.replace(new RegExp(`%(${variables.map(v => escapeRegex(v)).join("|")})%`, "g"), `<mark class="highlightVariableMark">%</mark><mark class="highlightVariableName">$1</mark><mark class="highlightVariableMark">%</mark>`));
+                        currArg = "";
+                        args.push(escapeHtml(quoteChar));
+                        quoteChar = '-';
+                        afterComma = false;
+                        inQuotes = false;
+                        continue;
+                    }
+                    if(escaped)
+                        currArg += `<mark class="highlightEscaped">${c}</mark>`;
+                    else
+                        currArg += c;
+                    escaped = false;
+                }else{
+                    if(c == ' '){
+                        currArg += c;
+                        escaped = false;
+                        continue;
+                    }else if(c == ',' && !afterComma){
+                        args.push(currArg);
+                        currArg = "";
+                        afterComma = true;
+                        continue;
+                    }else if((c == '"' || c == "'") && c != '-' && afterComma){
+                        args.push(currArg);
+                        currArg = "";
+                        quoteChar = c;
+                        inQuotes = true;
+                        continue;
+                    }
+                    return [content];
+                }
+            }
+            args.push(currArg)
+            if(inQuotes || afterComma) return [content];
+            return args;
         }
 
         init = () => {
@@ -227,8 +279,7 @@
                 $("#scriptarea").on("blur", function (e) {
                     window.setTimeout(() => {
                         if (new Date().getTime() - removeCompletions < 10) return;
-                        let completionArea = document.getElementById("completions");
-                        if (completionArea) completionArea.outerHTML = "";
+                        $("#completions").remove();
                     }, 1);
                 });
                 $("#scriptarea").on("keydown", function (e) {
@@ -270,11 +321,13 @@
                             document.getElementsByClassName("selected")[0].updateFunction(1);
                             e.preventDefault();
                         }else if(e.which == 27){
-                            let ca = document.getElementById("completions");
-                            if(ca) ca.outerHTML = "";
+                            $("#completions").remove();
                         }
                     }
-                    window.setTimeout(()=>applyHighlighting(this), 0);
+                    window.setTimeout(()=>applyHighlighting(this), 1);
+                });
+                $("#highlightingbox").on("change", function(e){
+                    applyHighlighting();
                 });
                 
                 // SOURCE: https://github.com/component/textarea-caret-position
@@ -314,6 +367,7 @@
 
                 $("#eventtype").on("change", function (e) { updateVariables(); });
                 updateVariables();
+                applyHighlighting();
             
                 caretHeight = function(){
                     let ta = document.createElement("textarea");
@@ -370,14 +424,18 @@
         }
         html {
             scroll-behavior: smooth;
+            background-color: #101110;
+            color: #ccc;
         }
 
         #scriptarea {
+            padding: 2px;
+            border: 1px #444 solid;
             width: 100%;
             height: 600px;
             background-color: transparent;
             color: transparent;
-            caret-color: black;
+            caret-color: #ddd;
             margin: 0;
             border-radius: 0;
             position: relative;
@@ -411,7 +469,7 @@
             width: 100%;
         }
         #backdrop {
-            background-color: #fff;
+            background-color: transparent;
             overflow: auto;
             position: absolute;
             width: 100%;
@@ -425,44 +483,51 @@
             top: 3px;
         }
         mark {
-            color: black;
+            color: #ddd;
             background-color: transparent;
         }
         .highlightFunctionName {
-            background-color: yellow;
+            color: #8bade9;
         }
         .highlightVariableName {
-            background-color: rgb(183, 128, 235);
+            color: #37ac28;
         }
         .highlightVariableMark {
-            background-color: hotpink;
+            color: #1d880f;
         }
         .highlightVariableDeclaration {
-            background-color: #aaa;
+            color: #2675ff;
         }
         .highlightVariableAssignment {
-            background-color: red;
+            color: #d2c6af;
         }
         .highlightFunctionArguments {
-            background-color: aqua;
+            
         }
         .highlightFunctionArgument {
-            background-color: bisque;
+            color: #bcffa4;
         }
         .highlightFunctionQuot {
-            background-color: brown;
+            color: #6be93d;
         }
         .highlightFunctionComma {
-            background-color: burlywood;
+            color: #ffffe9;
         }
-        .highlightParentheseOpen {
-            background-color: cadetblue;
+        .highlightInvalidArgument {
+            color: #f88;
+            text-decoration: underline dashed #f88;
         }
-        .highlightParentheseClose {
-            background-color: cadetblue;
+        .highlightEscaping {
+            color: #bbb;
+        }
+        .highlightEscaped {
+            color: #ea7546;
+        }
+        .highlightParentheseOpen, .highlightParentheseClose {
+            color: #ffffe9;
         }
         .highlightComment {
-            color: green;
+            color: rgb(85, 214, 85);
             font-style: italic;
         }
     </style>
@@ -481,11 +546,11 @@
     </div><br>
     Script name: <input id="scriptname"><br>
     Event type: <select id="eventtype"></select><br>
-    <label><input type="checkbox" id="highlightingbox">Enable syntax highlighting (looks like shit rn, but just as proof of concept)</label><br>
+    <label><input type="checkbox" id="highlightingbox" checked>Enable syntax highlighting (looks like shit rn, but just as proof of concept)</label><br>
     <label><input type="checkbox" id="defaultvariablecompletion">Insert default variables in auto completion</label>
     <div id="container">
         <div id="backdrop"><div id="highlights"></div></div>
-        <textarea id="scriptarea"></textarea>
+        <textarea id="scriptarea" spellcheck="false"></textarea>
     </div><br>
     <input id="loadscript" type="file">
     <button onclick="downloadScript();">Download Script</button>
