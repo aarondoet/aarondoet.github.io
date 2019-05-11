@@ -213,6 +213,7 @@
         }
 
         parseArgs = (content, variables) => {
+            if(!variables) variables = [];
             let args = [];
             let escaped = false;
             let inQuotes = false;
@@ -262,6 +263,58 @@
             args.push(currArg)
             if(inQuotes || afterComma) return [content];
             return args;
+        }
+
+        jumpToArgument = (cnt) => {
+            let ta = document.getElementById("scriptarea");
+            let caretPos = $(ta).prop("selectionStart");
+            let rowsBefore = ta.value.substr(0, caretPos).split("\n");
+            rowsBefore.pop();
+            let rowNumber = rowsBefore.length;
+            let rowValue = ta.value.split("\n")[rowNumber];
+            let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
+            let rowValueToCaret = rowValue.substr(0, col);
+            if (rowValueToCaret.includes("(")) {
+                let varDef = rowValue.match(/^( *)([a-zA-Z]+)( *)=/);
+                if(varDef) rowValue = rowValue.substr(varDef[0].length);
+                let m = rowValue.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
+                if(!m) return;
+                let argValue = m[4];
+                if(!argValue) return;
+                let args = parseArgs(argValue);
+                if(args.length > 1){
+                    let prefLen = m[1].length + m[2].length + m[3].length + 1;
+                    let lens = [];
+                    for(let i = 0; i < args.length; i+=4){
+                        let el = document.createElement("div");
+                        el.innerHTML = args[i] + args[i+1] + args[i+3];
+                        lens.push(el.innerText.length + 2);
+                    }
+                    let currLen = prefLen - 1;
+                    let arg = -1;
+                    for(let i = 0; i < lens.length; i++){
+                        currLen += lens[i] + 1;
+                        if(col <= currLen){
+                            arg = i;
+                            break;
+                        }
+                    }
+                    if(arg == -1) arg = lens.length - 1;
+                    arg += cnt;
+                    if(lens[arg]){
+                        currLen = prefLen - 1;
+                        for(let i = 0; i <= arg; i++){
+                            currLen += lens[i] + 1;
+                        }
+                        ta.selectionStart = currLen - 1;
+                        ta.selectionEnd = currLen - 1;
+                    }else if(arg == -1){
+                        currLen = prefLen + args[0].length + 1;
+                        ta.selectionStart = currLen;
+                        ta.selectionEnd = currLen;
+                    }
+                }
+            }
         }
 
         init = () => {
@@ -323,6 +376,10 @@
                         }else if(e.which == 27){
                             $("#completions").remove();
                         }
+                    }
+                    if(e.which == 9 && !document.getElementById("completions")){
+                        jumpToArgument(e.shiftKey ? -1 : 1);
+                        e.preventDefault();
                     }
                     window.setTimeout(()=>applyHighlighting(this), 1);
                 });
