@@ -4,6 +4,11 @@
 <head>
     <title>Script Editor</title>
     <meta charset="UTF-8">
+    <script type="text/javascript">
+        if(window.navigator.userAgent.indexOf("MSIE ") > 0 || window.navigator.userAgent.indexOf("Trident/") > 0){
+            window.location = "https://www.slimjet.com/en/lp/top-10-browsers.php";
+        }
+    </script>
     <script>
         const mayReturnFunctions = {
             "sendMessage": [['sendMessage("SELSTART%channelid%CARET", "")'], ['sendMessage(channelId, content)']],
