@@ -108,6 +108,7 @@
                         if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET').replace(/%[a-zA-Z]+%/g, '');
                         ta.value = ta.value.substr(0, caretPos) + compl.replace("CARET", "").replace("SELSTART", "") + ta.value.substring(caretPos, ta.value.length);
                         ta.selectionEnd = caretPos + compl.replace("SELSTART", "").indexOf("CARET");
+                        ta.selectionStart = ta.selectionEnd;
                         if(compl.indexOf("SELSTART") > -1) ta.selectionStart = caretPos + compl.indexOf("SELSTART");
                         ta.focus();
                     });
@@ -193,16 +194,18 @@
                 }
                 let funcName = line.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
                 if(funcName){
-                    let funcArgs = funcName[4].replace(/&quot;/g, '"').replace(/&#039;/g, "'");
-                    let args = parseArgs(funcArgs, variables);
-                    if(args.length == 1){
-                        funcArgs = `<mark class="highlightInvalidArgument">${args[0]}</mark>`;
-                    }else{
+                    let funcArgs = funcName[4];
+                    let args = parseArgs(funcArgs.replace(/&quot;/g, '"').replace(/&#039;/g, "'"), variables);
+                    if(args == null){
+                        funcArgs = `<mark class="highlightInvalidArgument">${funcArgs}</mark>`;
+                    }else if(args.length > 1){
                         funcArgs = "";
                         for(let i = 0; i < args.length;  i+=4){
                             funcArgs += `${args[i]}<mark class="highlightFunctionQuot">${args[i+2]}</mark><mark class="highlightFunctionArgument">${args[i+1]}</mark><mark class="highlightFunctionQuot">${args[i+2]}</mark>${args[i+3]}`;
                             if(i+4 < args.length) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
                         }
+                    }else{
+                        funcArgs = args[0];
                     }
                     retLine += funcName[1] + `<mark class="highlightFunctionName">${funcName[2]}</mark>` + funcName[3] + `<mark class="highlightParentheseOpen">(</mark>` + `<mark class="highlightFunctionArguments">${funcArgs}</mark>` + `<mark class="highlightParentheseClose">)</mark>` + funcName[5];
                     line = line.substr(funcName[0].length);
@@ -240,8 +243,10 @@
                         inQuotes = false;
                         continue;
                     }
-                    if(escaped)
+                    if(escaped && (c == '\\' || c == "'" || c == '"'))
                         currArg += `<mark class="highlightEscaped">${c}</mark>`;
+                    else if(escaped)
+                        return null;
                     else
                         currArg += c;
                     escaped = false;
@@ -262,11 +267,11 @@
                         inQuotes = true;
                         continue;
                     }
-                    return [content];
+                    return null;
                 }
             }
             args.push(currArg)
-            if(inQuotes || afterComma) return [content];
+            if(inQuotes || (afterComma && args.length > 1)) return null;
             return args;
         }
 
@@ -289,7 +294,7 @@
                 let argValue = m[4];
                 if(!argValue) return;
                 let args = parseArgs(escapeHtml(argValue).replace(/&quot;/g, '"').replace(/&#039;/g, "'"));
-                if(args.length > 1){
+                if(args != null && args.length > 1){
                     let rowPrefLen = varDefLen + m[1].length + m[2].length + m[3].length + 1;
                     let rowsBeforeLen = caretPos - col;
                     let lens = [];
@@ -314,7 +319,7 @@
                         for(let i = 0; i <= arg; i++){
                             currLen += lens[i] + 1;
                         }
-                        currLen += rowsBeforeLen;
+                        currLen += rowsBeforeLen - args[4*arg+3].length;
                         let el = document.createElement("div");
                         el.innerHTML = args[4*arg+1];
                         ta.selectionStart = currLen - 1 - el.innerText.length;
