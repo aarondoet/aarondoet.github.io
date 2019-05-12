@@ -53,7 +53,7 @@
             let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
             let variables = [].concat(eventBasedVariables);
             for (let row of rowsBefore) {
-                let varName = row.match(/^ *[a-zA-Z]+ *(?=\=)/);
+                let varName = row.match(/^ *[a-zA-Z0-9_\-]+ *(?=\=)/);
                 if (!varName) continue;
                 variables.push(varName[0].trim());
             }
@@ -72,7 +72,7 @@
                 }
             } else {
                 // inside the function
-                let currVarName = rowValueToCaret.match(/%[a-zA-Z]*$/);
+                let currVarName = rowValueToCaret.match(/%[a-zA-Z0-9_\-]*$/);
                 if (currVarName) {
                     // fuck firefox for not being able to process lookbehinds
                     currVarName = currVarName[0].substr(1);
@@ -105,7 +105,7 @@
                     aComplete[0].innerText = completions[completion][1][newIndex];
                     aComplete.on("click", ()=>{
                         let compl = completions[completion][0][getVariation(el[0])];
-                        if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET').replace(/%[a-zA-Z]+%/g, '');
+                        if(!document.getElementById("defaultvariablecompletion").checked) compl = compl.replace(/SELSTART.*CARET/g, 'CARET').replace(/%[a-zA-Z0-9_\-]+%/g, '');
                         ta.value = ta.value.substr(0, caretPos) + compl.replace("CARET", "").replace("SELSTART", "") + ta.value.substring(caretPos, ta.value.length);
                         ta.selectionEnd = caretPos + compl.replace("SELSTART", "").indexOf("CARET");
                         ta.selectionStart = ta.selectionEnd;
@@ -185,14 +185,14 @@
             let variables = [].concat(eventBasedVariables);
             let highlighted = escapeHtml(text).split("\n").map(line => {
                 let retLine = "";
-                let varDef = line.match(/^( *)([a-zA-Z]+)( *)=/);
+                let varDef = line.match(/^( *)([a-zA-Z0-9_\-]+)( *)=/);
                 let varNew;
                 if(varDef){
                     varNew = varDef[2];
                     retLine += varDef[1] + `<mark class="highlightVariableDeclaration">${varDef[2]}</mark>` + varDef[3] + `<mark class="highlightVariableAssignment">=</mark>`;
                     line = line.substr(varDef[0].length);
                 }
-                let funcName = line.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
+                let funcName = line.match(/^( *)([a-zA-Z0-9_\-]+)( *)\((.*)\)( *)$/);
                 if(funcName){
                     let funcArgs = funcName[4];
                     let args = parseArgs(funcArgs.replace(/&quot;/g, '"').replace(/&#039;/g, "'"), variables);
@@ -285,11 +285,11 @@
             let col = caretPos - rowsBefore.join("\n").length - (rowNumber == 0 ? 0 : 1);
             let rowValueToCaret = rowValue.substr(0, col);
             if (rowValueToCaret.includes("(")) {
-                let varDef = rowValue.match(/^( *)([a-zA-Z]+)( *)=/);
+                let varDef = rowValue.match(/^( *)([a-zA-Z0-9_\-]+)( *)=/);
                 let varDefLen = 0;
                 if(varDef) varDefLen = varDef[0].length;
                 rowValue = rowValue.substr(varDefLen);
-                let m = rowValue.match(/^( *)([a-zA-Z]+)( *)\((.*)\)( *)$/);
+                let m = rowValue.match(/^( *)([a-zA-Z0-9_\-]+)( *)\((.*)\)( *)$/);
                 if(!m) return;
                 let argValue = m[4];
                 if(!argValue) return;
