@@ -15,7 +15,8 @@
             "editMessage": [['editMessage("SELSTART%channelid%CARET", "", "")'], ['editMessage(channelId, messageId, newContent)']],
             "setNickname": [['setNickname("SELSTART%userid%CARET", "")'], ['setNickname(userId, newNick)']],
             "resetNickname": [['resetNickname("SELSTART%userid%CARET")'], ['resetNickname(userId)']],
-            "createRole": [['createRole("CARET")'], ['createRole(roleName)']]
+            "createRole": [['createRole("CARET")'], ['createRole(roleName)']],
+            "match": [['match("CARET", "")'], ['match(toMatch, regExp)']]
         };
         const returnOnlyFunctions = {
             "isInVoiceChannel": [['isInVoiceChannel("SELSTART%userid%CARET", "")', 'isInVoiceChannel("SELSTART%userid%CARET")'], ['isInVoiceChannel(userId, channelId)', 'isInVoiceChannel(userId)']],
@@ -54,8 +55,18 @@
             let variables = [].concat(eventBasedVariables);
             for (let row of rowsBefore) {
                 let varName = row.match(/^ *[a-zA-Z0-9_\-]+ *(?=\=)/);
-                if (!varName) continue;
-                variables.push(varName[0].trim());
+                if (varName){
+                    variables.push(varName[0].trim());
+                    row = row.substr(varName[0].length + 1);
+                }
+                let m = row.match(/^ *match *\((.*)\) *$/);
+                if(m){
+                    let args = parseArgs(m[1]);
+                    let matchStr = args[5] || "";
+                    let d = document.createElement("div");
+                    d.innerHTML = matchStr;
+                    for(let i = getGroupCount(d.innerText.replace(/\\\\/g, "\\")); i > 0; i--) variables.push("group" + i);
+                }
             }
             let rowValueToCaret = rowValue.substr(0, col);
             if (!rowValueToCaret.includes("(")) {
@@ -187,9 +198,9 @@
             let highlighted = escapeHtml(text).split("\n").map(line => {
                 let retLine = "";
                 let varDef = line.match(/^( *)([a-zA-Z0-9_\-]+)( *)=/);
-                let varNew;
+                let newVars= [];
                 if(varDef){
-                    varNew = varDef[2];
+                    newVars.push(varDef[2]);
                     retLine += varDef[1] + `<mark class="highlightVariableDeclaration">${varDef[2]}</mark>` + varDef[3] + `<mark class="highlightVariableAssignment">=</mark>`;
                     line = line.substr(varDef[0].length);
                 }
@@ -205,6 +216,12 @@
                             funcArgs += `${args[i]}<mark class="highlightFunctionQuot">${args[i+2]}</mark><mark class="highlightFunctionArgument">${args[i+1]}</mark><mark class="highlightFunctionQuot">${args[i+2]}</mark>${args[i+3]}`;
                             if(i+4 < args.length) funcArgs += `<mark class="highlightFunctionComma">,</mark>`;
                         }
+                        if (funcName[2] == "match") {
+                            let matchStr = args[5] || "";
+                            let d = document.createElement("div");
+                            d.innerHTML = matchStr;
+                            for(let i = getGroupCount(d.innerText.replace(/\\\\/g, "\\")); i > 0; i--) newVars.push("group" + i);
+                        }
                     }else{
                         funcArgs = args[0];
                     }
@@ -215,7 +232,7 @@
                 }else{
                     retLine += `<mark>${line}</mark>`
                 }
-                if(varNew) variables.push(varNew);
+                for(let varNew of newVars) variables.push(varNew);
                 return retLine || `<mark>${line}</mark>`;
             }).join("\n").replace(/\n/g, '<br>');
             $("#highlights").html(highlighted);
@@ -274,6 +291,14 @@
             args.push(currArg)
             if(inQuotes || (afterComma && args.length > 1)) return null;
             return args;
+        }
+
+        getGroupCount = (regex) => {
+            try{
+                return new RegExp(regex + "|").exec("").length - 1;
+            }catch(ex){
+                return regex.split("(").length - 1;
+            }
         }
 
         jumpToArgument = (cnt) => {
