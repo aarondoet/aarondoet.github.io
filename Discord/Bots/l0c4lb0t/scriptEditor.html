@@ -111,6 +111,7 @@
                         ta.selectionStart = ta.selectionEnd;
                         if(compl.indexOf("SELSTART") > -1) ta.selectionStart = caretPos + compl.indexOf("SELSTART");
                         ta.focus();
+                        applyHighlighting(ta);
                     });
                     if(funcCount > 1){
                         let aRight = $(`<span class="completeRight">&gt;</span>`).appendTo(this);
@@ -243,7 +244,7 @@
                         inQuotes = false;
                         continue;
                     }
-                    if(escaped && (c == '\\' || c == "'" || c == '"'))
+                    if(escaped && (c == '\\' || c == "'" || c == '"' || c == 'n'))
                         currArg += `<mark class="highlightEscaped">${c}</mark>`;
                     else if(escaped)
                         return null;
