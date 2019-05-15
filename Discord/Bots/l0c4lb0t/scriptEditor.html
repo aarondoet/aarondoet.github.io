@@ -261,7 +261,7 @@
                         inQuotes = false;
                         continue;
                     }
-                    if(escaped && (c == '\\' || c == "'" || c == '"' || c == 'n'))
+                    if(escaped && (c == '\\' || c == 'n' || c == quoteChar))
                         currArg += `<mark class="highlightEscaped">${c}</mark>`;
                     else if(escaped)
                         return null;
@@ -487,7 +487,29 @@
         const evBaVar = {
             "onMessage": [].concat(defaultVars).concat(userVars).concat(textChannelVars).concat(messageVars),
             "onJoin": [].concat(defaultVars).concat(userVars),
-            "onLeave": [].concat(defaultVars).concat(userVars)
+            "onLeave": [].concat(defaultVars).concat(userVars),
+            "onBan": [],
+            "onUnban": [],
+            "onPin": [],
+            "onUnpin": [],
+            "onNick": [],
+            "onVoiceJoin": [],
+            "onVoiceMove": [],
+            "onVoiceLeave": [],
+            "onReactionAdded": [],
+            "onReactionRemoved": [],
+            "onRoleAdded": [],
+            "onRoleRemoved": [],
+            "onRoleCreated": [],
+            "onChannelCreated": [],
+            "onCategoryCreated": [],
+            "onVoiceChannelCreated": [],
+            "onTextChannelCreated": [],
+            "onRoleDeleted": [],
+            "onChannelDeleted": [],
+            "onCategoryDeleted": [],
+            "onVoiceChannelDeleted": [],
+            "onTextChannelDeleted": []
         };
 
         download = (filename, content) => {
