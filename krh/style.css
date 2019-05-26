@@ -1,0 +1,143 @@
+:root {
+    --headerheight: 100vh;
+    --footerheight: 60px;
+    --contentmargin: 15%;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+* {
+    font-family: 'Roboto';
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-size: 100%;
+}
+
+#page-wrapper {
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+}
+
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--headerheight);
+    z-index: 10;
+    overflow: hidden;
+}
+
+#header img {
+    width: 100%;
+    position: absolute;
+    top: -100%;
+    left: calc(50% - 1px);
+}
+
+#header .parallax-container {
+    height: 100vh;
+    position: relative;
+}
+
+#header .parallax {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#header h1 {
+    color: white;
+    font-size: 6em;
+    bottom: -24px;
+    position: absolute;
+    margin: 0;
+    font-variant: petite-caps;
+}
+
+#content {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding-top: calc(var(--headerheight) + 30px);
+    padding-bottom: calc(var(--footerheight) + 30px);
+    width: calc(100% - 2 * var(--contentmargin));
+    padding-left: var(--contentmargin);
+    padding-right: var(--contentmargin);
+}
+
+div.quote+div.quote {
+    margin-top: 30px;
+}
+.quote .quote {
+    font-style: italic;
+}
+.quote .quote:before {
+    content: '"';
+}
+.quote .quote:after {
+    content: '"';
+}
+.author {
+    font-variant: petite-caps;
+    font-weight: bold;
+}
+.author:before {
+    content: ' - ';
+}
+
+#beispielbilder {
+    position: relative;
+    height: 34vw;
+}
+#beispielbilder div {
+    width: 32.5%;
+    position: absolute;
+}
+#beispielbilder img {
+    width: 100%;
+}
+#beispielbilder span {
+    font-variant: small-caps;
+    font-size: 0.9em;
+    top: -5px;
+    position: relative;
+}
+
+.analysebeispiel {
+    width: 60%;
+    margin-left: 20%;
+    margin-bottom: 20px;
+    font-variant: petite-caps;
+}
+.analysebild {
+    width: 100%;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--footerheight);
+    text-align: center;
+    border-top: 1px #999 solid;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#quellen {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    text-decoration: none;
+}
