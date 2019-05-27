@@ -271,14 +271,13 @@
                 }else{
                     if(c == ' '){
                         currArg += c;
-                        escaped = false;
                         continue;
                     }else if(c == ',' && !afterComma){
                         args.push(currArg);
                         currArg = "";
                         afterComma = true;
                         continue;
-                    }else if((c == '"' || c == "'") && c != '-' && afterComma){
+                    }else if((c == '"' || c == "'") && afterComma){
                         args.push(currArg);
                         currArg = "";
                         quoteChar = c;
