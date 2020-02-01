@@ -40,7 +40,7 @@ new MutationObserver(function(mut){
 				});
 				pluginLinks.appendChild(supportServerLink);
 				pluginLinks.appendChild(document.createTextNode(' | '));
-				pluginLinks.appendChild($(`<a class="bda-link bda-link-donations" href="https://www.patreon.com/l0c4lh057" target="_blank">Donations</a>`)[0]);
+				pluginLinks.appendChild($(`<a class="bda-link bda-link-donations" href="https://www.patreon.com/l0c4lh057" target="_blank">Patreon</a>`)[0]);
 			}
 		}
 	}
