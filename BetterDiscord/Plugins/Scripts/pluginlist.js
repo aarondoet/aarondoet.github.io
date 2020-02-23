@@ -73,7 +73,7 @@
                                 value: pl.name,
                                 key: pl.name
                             },
-                            `${pl.displayName || pl.name} ${pl.plugin.getVersion()}`
+                            `${pl.displayName || pl.name} v${pl.plugin.getVersion()}`
                         )
                     );
                     return createElement("div", {style: {marginTop:"20px"}},
