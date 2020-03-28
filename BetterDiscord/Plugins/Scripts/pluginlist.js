@@ -13,38 +13,48 @@
                 if (!pluginAuthor.firstElementChild && !pluginDescription.firstElementChild && (pluginAuthor.innerText==='l0c4lh057')) {
                     var currentUser = BdApi.findModuleByProps(["getCurrentUser"]).getCurrentUser();
                     pluginDescription.style.setProperty('display', 'block', 'important');
-                    pluginAuthor.innerHTML = '<a class="anchor-3Z-8Bb da-anchor anchorUnderlineOnHover-2ESHQB da-anchorUnderlineOnHover">l0c4lh057</a>';
-                    pluginAuthor.addEventListener('click', () => {
-                        if(currentUser.id==="226677096091484160") return;
-                        let userDM = BdApi.findModuleByProps(["getDMFromUserId"]).getDMFromUserId("226677096091484160");
-                        if (userDM) BdApi.findModuleByProps(["selectPrivateChannel"]).selectPrivateChannel(userDM);
-                        else BdApi.findModuleByProps(["openPrivateChannel"]).openPrivateChannel(currentUser.id, "226677096091484160");
-                        let closeSettingsButton = document.querySelector(".container-1sFeqf .closeButton-1tv5uR");
-                        if (closeSettingsButton) closeSettingsButton.click();
-                    });
+                    if(!pluginAuthor.className.includes("anchor-")){
+                        pluginAuthor.innerHTML = '<a class="anchor-3Z-8Bb da-anchor anchorUnderlineOnHover-2ESHQB da-anchorUnderlineOnHover">l0c4lh057</a>';
+                        pluginAuthor.addEventListener('click', () => {
+                            if(currentUser.id==="226677096091484160") return;
+                            let userDM = BdApi.findModuleByProps(["getDMFromUserId"]).getDMFromUserId("226677096091484160");
+                            if (userDM) BdApi.findModuleByProps(["selectPrivateChannel"]).selectPrivateChannel(userDM);
+                            else BdApi.findModuleByProps(["openPrivateChannel"]).openPrivateChannel(currentUser.id, "226677096091484160");
+                            let closeSettingsButton = document.querySelector(".container-1sFeqf .closeButton-1tv5uR");
+                            if (closeSettingsButton) closeSettingsButton.click();
+                        });
+                    }
                     let pluginLinks = plugin.querySelector(".bda-links");
                     if (!pluginLinks) {
                         let pluginFooter = document.createElement("div");
                         plugin.appendChild(pluginFooter);
-                        pluginFooter.outerHTML = `<div class="bda-footer"><span class="bda-links"></span></div>`;
+                        pluginFooter.outerHTML = `<div class="bd-card-footer bda-footer"><span class="bda-links"></span></div>`;
                         pluginLinks = plugin.querySelector(".bda-links");
                     }
-                    if (pluginLinks.firstElementChild) pluginLinks.appendChild(document.createTextNode(' | '));
-                    let supportServerLink = $('<a class="bda-link bda-link-support" target="_blank">Support Server</a>')[0];
-                    supportServerLink.addEventListener('click', ev => {
-                        let closeSettings = () => {
-                            BdApi.findModuleByProps(["transitionToGuildSync"]).transitionToGuildSync('523546147776757769');
-                            let closeSettingsButton = document.querySelector(".container-1sFeqf .closeButton-1tv5uR");
-                            if (closeSettingsButton) closeSettingsButton.click();
-                        };
-                        if (BdApi.findModuleByProps(["getGuild"]).getGuild('523546147776757769')) closeSettings();
-                        else BdApi.findModuleByProps("acceptInvite").acceptInvite("acQjXZD").then(result => {
-                            closeSettings();
+                    /*
+                     * I am starting to add BBDs meta tags for this but they won't appear until I update the plugins.
+                     * Plugins with the meta tags should not have them twice though.
+                     */
+                    if(!Array.from(pluginLinks.childNodes).some(node => node.innerHTML === "Support Server")){
+                        if (pluginLinks.firstElementChild) pluginLinks.appendChild(document.createTextNode(' | '));
+                        let supportServerLink = $('<a class="bda-link bda-link-support" target="_blank">Support Server</a>')[0];
+                        supportServerLink.addEventListener('click', ev => {
+                            let closeSettings = () => {
+                                BdApi.findModuleByProps(["transitionToGuildSync"]).transitionToGuildSync('523546147776757769');
+                                let closeSettingsButton = document.querySelector(".container-1sFeqf .closeButton-1tv5uR");
+                                if (closeSettingsButton) closeSettingsButton.click();
+                            };
+                            if (BdApi.findModuleByProps(["getGuild"]).getGuild('523546147776757769')) closeSettings();
+                            else BdApi.findModuleByProps("acceptInvite").acceptInvite("acQjXZD").then(result => {
+                                closeSettings();
+                            });
                         });
-                    });
-                    pluginLinks.appendChild(supportServerLink);
-                    pluginLinks.appendChild(document.createTextNode(' | '));
-                    pluginLinks.appendChild($(`<a class="bda-link bda-link-donations" href="https://www.patreon.com/l0c4lh057" target="_blank">Patreon</a>`)[0]);
+                        pluginLinks.appendChild(supportServerLink);
+                    }
+                    if(!Array.from(pluginLinks.childNodes).some(node => node.innerHTML === "Patreon")){
+                        pluginLinks.appendChild(document.createTextNode(' | '));
+                        pluginLinks.appendChild($(`<a class="bda-link bda-link-donations" href="https://www.patreon.com/l0c4lh057" target="_blank">Patreon</a>`)[0]);
+                    }
                 }
             }
         }
@@ -67,13 +77,13 @@
                     };
                 }
                 render(){
-                    let plugins = Object.values(bdplugins).filter(pl=>pl.plugin.getAuthor().includes("l0c4lh057")).map(pl=>
+                    let plugins = BdApi.Plugins.getAll().filter(pl=>pl.getAuthor().includes("l0c4lh057")).map(pl=>
                         createElement("option",
                             {
-                                value: pl.name,
-                                key: pl.name
+                                value: pl.getName(),
+                                key: pl.getName()
                             },
-                            `${pl.displayName || pl.name} v${pl.plugin.getVersion()}`
+                            `${pl.getName()} v${pl.getVersion()}`
                         )
                     );
                     return createElement("div", {style: {marginTop:"20px"}},
@@ -107,7 +117,7 @@ Steps to reproduce the behavior:
 - Plugin version: ${BdApi.getPlugin(this.state.plugin).getVersion()}
 - Discord version: ${BdApi.findModuleByProps("releaseChannel").releaseChannel} ${GLOBAL_ENV.SENTRY_TAGS.buildId}
 - Compact mode: ${BdApi.findModuleByProps("customStatus","renderSpoilers","messageDisplayCompact").messageDisplayCompact?"yes":"no"}
-- Plugin enabled: ${BdApi.isPluginEnabled(this.state.plugin)?"yes":"no"}
+- Plugin enabled: ${BdApi.Plugins.isEnabled(this.state.plugin)?"yes":"no"}
 ${this.state.plugin==="AccountSwitcher"?`- Encryption enabled: ${BdApi.getPlugin("AccountSwitcher").settings.encrypted?"yes":"no"}\n`:""}
 **Additional context**
 \`Add any other context about the problem here.\`
@@ -131,7 +141,7 @@ ${this.state.plugin==="AccountSwitcher"?`- Encryption enabled: ${BdApi.getPlugin
                             "Insert Template"
                         ),
                         createElement("br", {}),
-                        !BdApi.isPluginEnabled(this.state.plugin) && createElement("b", {}, " Note: The selected plugin is not enabled. Try enabling it before submitting an issue.")
+                        !BdApi.Plugins.isEnabled(this.state.plugin) && createElement("b", {}, " Note: The selected plugin is not enabled. Try enabling it before submitting an issue.")
                     );
                 }
             };
@@ -173,6 +183,11 @@ ${this.state.plugin==="AccountSwitcher"?`- Encryption enabled: ${BdApi.getPlugin
         showInfo();
     };
     require("electron").remote.getCurrentWebContents().on("did-navigate-in-page", secret.onSwitch);
+    
+    secret.stopActivity = ()=>{
+        secret.observer.disconnect();
+        require("electron").remote.getCurrentWebContents().off("did-navigate-in-page", secret.onSwitch);
+    };
     
     global.__l0c4lh057s_secret_stuff = secret;
 })();
