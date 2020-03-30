@@ -73,7 +73,7 @@
                 constructor(props){
                     super(props);
                     this.state = {
-                        plugin: ""
+                        plugin: BdApi.Plugins.getAll().filter(pl=>pl.getAuthor().includes("l0c4lh057")).map(pl=>pl.getName())[0]
                     };
                 }
                 render(){
@@ -97,7 +97,6 @@
                         " ",
                         createElement("button",
                             {
-                                enabled: !!this.state.plugin,
                                 onClick: ()=>{
                                     let template = `**[${this.state.plugin}] Issue: \`short issue description\`**
 **Bug description**
@@ -114,11 +113,15 @@ Steps to reproduce the behavior:
 
 **Information**
 - OS: ${(os=>os==="win32"?"Windows":os==="darwin"?"MacOS":os==="linux"?"Linux":os)(require("os").platform())}
-- Plugin version: ${BdApi.getPlugin(this.state.plugin).getVersion()}
-- Discord version: ${BdApi.findModuleByProps("releaseChannel").releaseChannel} ${GLOBAL_ENV.SENTRY_TAGS.buildId}
+- Versions:
+  * Plugin: ${BdApi.Plugins.get(this.state.plugin).getVersion()}
+  * Release Channel: ${BdApi.findModuleByProps("releaseChannel").releaseChannel}
+  * Build ID: ${GLOBAL_ENV.SENTRY_TAGS.buildId}
+  * BD version: ${BdApi.getBDData("version")}
+  * ZLibrary: ${BdApi.Plugins.get("ZeresPluginLibrary") ? BdApi.Plugins.get("ZeresPluginLibrary").getVersion() : "not installed"}
 - Compact mode: ${BdApi.findModuleByProps("customStatus","renderSpoilers","messageDisplayCompact").messageDisplayCompact?"yes":"no"}
 - Plugin enabled: ${BdApi.Plugins.isEnabled(this.state.plugin)?"yes":"no"}
-${this.state.plugin==="AccountSwitcher"?`- Encryption enabled: ${BdApi.getPlugin("AccountSwitcher").settings.encrypted?"yes":"no"}\n`:""}
+${this.state.plugin==="AccountSwitcher"?`- Encryption enabled: ${BdApi.Plugins.get("AccountSwitcher").settings.encrypted?"yes":"no"}\n`:""}
 **Additional context**
 \`Add any other context about the problem here.\`
 
