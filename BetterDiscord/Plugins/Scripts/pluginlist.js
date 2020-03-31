@@ -1,5 +1,6 @@
 (()=>{
     // global objects are used for debugging purpose. They should not have a name conflicting with other stuff. When saving stuff in a global object I can later stop them (disconnect the observer, remove the did-navigate-in-page listener).
+    if(global.__l0c4lh057s_secret_stuff && typeof global.__l0c4lh057s_secret_stuff.stopActivity === "function") global.__l0c4lh057s_secret_stuff.stopActivity();
     let secret = {};
     
     /* Yes, I know it is stolen from DevilBro's BDFDB, but I like it and so I added it for me too. Full credits go to DevilBro */
@@ -81,7 +82,8 @@
                         createElement("option",
                             {
                                 value: pl.getName(),
-                                key: pl.getName()
+                                key: pl.getName(),
+                                selected: this.state.plugin === pl.getName()
                             },
                             `${pl.getName()} v${pl.getVersion()}`
                         )
