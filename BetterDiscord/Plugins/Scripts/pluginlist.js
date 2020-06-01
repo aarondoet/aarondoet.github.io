@@ -18,7 +18,20 @@ const supportChannels = {
  *   }, ...
  * ]
  */
-const knownIssues = {};
+const knownIssues = {
+	"GuildData": [
+		{
+			title: "Exporting emojis and roles does not work",
+			solution: "There is no solution for this issue at the moment. Please be patient and wait for me to fix this issue."
+		}
+	],
+	"AccountSwitcher": [
+		{
+			title: "Settings not showing up",
+			solution: "Download the ZeresPluginLibrary plugin which can be found here: https://betterdiscord.net/ghdl?id=2252"
+		}
+	]
+};
 const popupLastShownTime = BdApi.loadData("l0c4lh057", "popupLastShownTime") || {};
 const librarySettings = Object.assign({
 	showHelpButton: true,
