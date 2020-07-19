@@ -52,6 +52,30 @@ const classNames = {
 	content: BdApi.findModuleByProps("body", "container", "content").content
 }
 
+const Plugin = class Plugin {
+	constructor(name, version, author, instance){
+		this.name = name;
+		this.version = version;
+		this.author = author;
+		this.instance = instance;
+	}
+	getName(){ return this.name; }
+	getVersion(){ return this.version; }
+	getAuthor(){ return this.author; }
+	getAuthors(){ return this.author.split(",").map(author => author.trim()); }
+	getInstance(){ return this.instance; }
+}
+const convertPluginClass = plugin=>{
+	if(!plugin) return plugin;
+	if(plugin.plugin && plugin.name && plugin.modified && plugin.filename){
+		return new Plugin(plugin.id, plugin.plugin.getVersion(), plugin.plugin.getAuthor(), plugin.plugin);
+	}else{
+		return new Plugin(plugin.getName(), plugin.getVersion(), plugin.getAuthor(), plugin);
+	}
+}
+const getAllPlugins = ()=>BdApi.Plugins.getAll().map(convertPluginClass);
+const getPlugin = name=>convertPluginClass(BdApi.Plugins.get(name));
+
 const { React } = BdApi;
 const Textbox = BdApi.findModule(m => m.defaultProps && m.defaultProps.type == "text");
 const Dropdown = BdApi.findModule(m => m.prototype && !m.prototype.handleClick && m.prototype.render && m.prototype.render.toString().includes("default.select"));
@@ -151,7 +175,7 @@ const showIssueTemplate = (authors)=>{
 	const Alert = class extends React.Component {
 		constructor(props){
 			super(props);
-			const availablePlugins = BdApi.Plugins.getAll().filter(pl=>pl.getAuthor().split(", ").some(plAuthor => props.authors.includes(plAuthor)));
+			const availablePlugins = getAllPlugins().filter(pl=>pl.getAuthors().some(plAuthor => props.authors.includes(plAuthor)));
 			if(stateCache[props.channelId] && availablePlugins.some(pl=>pl.getName()===stateCache[props.channelId].selectedPlugin.getName())){
 				this.state = Object.assign(stateCache[props.channelId], {
 					// updating available plugins in case a plugin got installed or removed
@@ -384,13 +408,13 @@ const showIssueTemplate = (authors)=>{
 - Versions:
   * Plugin: ${this.state.selectedPlugin.getVersion()}
   * BBD: ${BdApi.getBDData("version")}
-  * ZLibrary: ${(BdApi.Plugins.get("ZeresPluginLibrary")||{getVersion:()=>"not installed"}).getVersion()}
+  * ZLibrary: ${(getPlugin("ZeresPluginLibrary")||{getVersion:()=>"not installed"}).getVersion()}
   * Release channel: ${BdApi.findModuleByProps("releaseChannel").releaseChannel}
   * Build ID: ${GLOBAL_ENV.SENTRY_TAGS.buildId}
 - OS: ${(os=>os==="win32"?"Windows":os==="darwin"?"MacOS":os==="linux"?"Linux":os)(require("os").platform())}
 - Compact mode: ${BdApi.findModuleByProps("customStatus","renderSpoilers","messageDisplayCompact").messageDisplayCompact?"yes":"no"}
 - Plugin enabled: ${BdApi.Plugins.isEnabled(this.state.selectedPlugin.getName())?"yes":"no"}`
-			+ (this.state.selectedPlugin.getName()==="AccountSwitcher"?`\n- Encryption enabled: ${this.state.selectedPlugin.settings.encrypted?"yes":"no"}`:"");
+			+ (this.state.selectedPlugin.getName()==="AccountSwitcher"?`\n- Encryption enabled: ${this.state.selectedPlugin.getInstance().settings.encrypted?"yes":"no"}`:"");
 		}
 		getAdditionalContext(){
 			let context = this.state.additionalContext.split("\n").map(l=>l.trim()).join("\n").trim().replace(/\n{3,}/g, "\n\n");
@@ -428,7 +452,7 @@ const showGeneralInformation = (authors)=>{
 		"Check the support channel for related issues. If it already got reported there is no need to write a full report. Just refer to the previous report and give some information and screenshots of the error messages you get.",
 		"(Check GitHub for related issues)"
 	];
-	if(authors.every(author=>author!=="l0c4lh057")||!BdApi.Plugins.get("AccountSwitcher")) steps = steps.filter(step => !step.includes("AccountSwitcher"));
+	if(authors.every(author=>author!=="l0c4lh057")||!getPlugin("AccountSwitcher")) steps = steps.filter(step => !step.includes("AccountSwitcher"));
 	BdApi.showConfirmationModal(
 		"How to ask for support",
 		React.createElement(
@@ -553,8 +577,8 @@ secret.patchPlugin = plugin=>{
 		patches.push(()=>plugin.getSettingsPanel = getSettingsPanel);
 	}
 }
-BdApi.Plugins.getAll()
-		.filter(plugin => plugin.getAuthor().split(",").map(author => author.trim()).some(author => allAuthors.includes(author)))
+getAllPlugins()
+		.filter(plugin => plugin.getAuthors().some(author => allAuthors.includes(author)))
 		.forEach(secret.patchPlugin);
 
 secret.stopActivity = ()=>{
@@ -562,4 +586,4 @@ secret.stopActivity = ()=>{
 	patches.forEach(unpatch => unpatch());
 }
 global.__l0c4lh057s_secret_stuff = secret;
-})()
+})();
