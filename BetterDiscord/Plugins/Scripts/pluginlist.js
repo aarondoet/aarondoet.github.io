@@ -21,14 +21,8 @@ const supportChannels = {
 const knownIssues = {
 	"GuildData": [
 		{
-			title: "Exporting emojis and roles does not work",
-			solution: "There is no solution for this issue at the moment. Please be patient and wait for me to fix this issue."
-		}
-	],
-	"AccountSwitcher": [
-		{
-			title: "Settings not showing up",
-			solution: "Download the ZeresPluginLibrary plugin which can be found here: https://betterdiscord.net/ghdl?id=2252"
+			title: "[something] does not work",
+			solution: "The plugin currently is in a broken state. I will rewrite it at some point in the future but I can't tell when that will be."
 		}
 	]
 };
