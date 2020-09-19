@@ -560,6 +560,7 @@ const libSettings = (()=>{
 	return panel;
 })();
 secret.patchPlugin = plugin=>{
+	plugin = plugin.getInstance();
 	if(typeof plugin.getSettingsPanel !== "function"){
 		plugin.getSettingsPanel = ()=>libSettings;
 		patches.push(()=>plugin.getSettingsPanel = undefined);
