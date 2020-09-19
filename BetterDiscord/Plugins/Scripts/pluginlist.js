@@ -486,13 +486,14 @@ const onSwitch = ()=>{
 		BdApi.saveData("l0c4lh057", "popupLastShownTime", popupLastShownTime);
 		showGeneralInformation(authors);
 	}
-	if(librarySettings.showHelpButton){
+	if(librarySettings.showHelpButton && !document.getElementById("l0c4lh057-issue-helper")){
 		let module1 = BdApi.findModuleByProps("buttons","textArea","textAreaSlate");
 		let module2 = BdApi.findModuleByProps("active","button","buttonWrapper");
 		let module3 = BdApi.findModuleByProps("button","colorBrand","lookBlank","grow");
 		let module4 = BdApi.findModuleByProps("button","buttonContainer","channelTextArea")
 		let buttons = document.getElementsByClassName(module1.buttons)[0];
 		let button = document.createElement("button");
+		button.id = "l0c4lh057-issue-helper";
 		button.classList.add(...module4.buttonContainer.split(" "), ...module3.button.split(" "), ...module3.lookBlank.split(" "), ...module3.colorBrand.split(" "), ...module3.grow.split(" "));
 		button.innerHTML = `
 						<div class="${module3.contents} ${module2.button} ${module1.button}">
