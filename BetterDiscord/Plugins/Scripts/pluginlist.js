@@ -46,6 +46,7 @@ const classNames = {
 	content: BdApi.findModuleByProps("body", "container", "content").content
 }
 
+const isPowercord = ()=>window.WebSocket&&window.WebSocket.name&&window.WebSocket.name.includes("Patched");
 const Plugin = class Plugin {
 	constructor(name, version, author, instance){
 		this.name = name;
@@ -401,7 +402,7 @@ const showIssueTemplate = (authors)=>{
 			return `\n\n**Information**
 - Versions:
   * Plugin: ${this.state.selectedPlugin.getVersion()}
-  * BBD: ${BdApi.getBDData("version")}
+  * BBD: ${isPowercord() ? "Powercord" : BdApi.getBDData("version")}
   * ZLibrary: ${(getPlugin("ZeresPluginLibrary")||{getVersion:()=>"not installed"}).getVersion()}
   * Release channel: ${BdApi.findModuleByProps("releaseChannel").releaseChannel}
   * Build ID: ${GLOBAL_ENV.SENTRY_TAGS.buildId}
